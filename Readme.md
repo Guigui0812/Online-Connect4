@@ -1,0 +1,1 @@
+installer Pygame : pip install pygame --pre car pas de version dispo pour python 3.11
