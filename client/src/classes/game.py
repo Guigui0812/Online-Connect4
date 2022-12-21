@@ -12,19 +12,26 @@ class Game:
     # game loop de la partie
     def startGame(self):
 
+        player = 1
+
         while self.gameOver == False:
 
-            print("game loop")
-            self.screen.fill('#9C9FA8')
-                  
+            # Draw the game window
+            self.screen.fill('#9C9FA8')              
             self.grid.draw(self.screen)
             pg.display.update()
 
-            # Gestion des évènements
+            # Event loop
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     pg.quit()
 
-                if(event.type == pg.MOUSEBUTTONDOWN):      
-                        mouseX, mouseY = pg.mouse.get_pos()            
-                        self.grid.set_box(mouseX, mouseY, 1)
+                if event.type == pg.MOUSEBUTTONDOWN:   
+                    print("mouse down")
+                    mouseX, mouseY = pg.mouse.get_pos()            
+                    
+                    if self.grid.set_box(mouseX, mouseY, player) == True:
+                        if player == 1:
+                            player = 2
+                        else:
+                            player = 1
