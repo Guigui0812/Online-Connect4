@@ -5,7 +5,7 @@ class Button:
     def __init__(self, txt, pos, screen):
         self.string = txt
         self.pos = pos
-        self.font = pg.font.Font('assets/Starborn.ttf', 26)
+        self.font = pg.font.Font('../assets/Starborn.ttf', 26)
         self.screen = screen
         self.rect = pg.rect.Rect((self.pos[0], self.pos[1]), (260, 40))
 
