@@ -1,5 +1,5 @@
 import pygame as pg 
-import classes
+import menu
 
 pg.init()
 
@@ -7,9 +7,10 @@ WIDTH = 600
 HEIGHT = 600
 screen = pg.display.set_mode((WIDTH, HEIGHT))
 
-pg.display.set_caption('Menu principal')
+programIcon = pg.transform.scale(pg.image.load("../assets/icon.png"), (32, 32))
+pg.display.set_icon(programIcon)
 menuBool= False
 gameBool = False
 
-menu = classes.Main_Menu(screen, WIDTH, HEIGHT)
+menu = menu.Main_Menu(screen, WIDTH, HEIGHT)
 menu.run_menu()

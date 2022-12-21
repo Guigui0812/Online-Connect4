@@ -1,12 +1,13 @@
 import pygame as pg
-import classes
+import menu
+import solo
 
 class Main_Menu:
 
     def __init__(self, screen, widht, height):
         self.gameOver = False
-        start_button = classes.Button('Jouer', (widht / 2 - 130, height / 2 - 20), screen)
-        exit_button = classes.Button('Quitter', (widht / 2 - 130, height / 2 + 30), screen)
+        start_button = menu.Button('Jouer', (widht / 2 - 130, height / 2 - 20), screen)
+        exit_button = menu.Button('Quitter', (widht / 2 - 130, height / 2 + 30), screen)
         self.buttons = [start_button, exit_button]
         self.screen = screen
 
@@ -17,6 +18,8 @@ class Main_Menu:
 
     def run_menu(self):
 
+        pg.display.set_caption('Menu principal')
+        
         while True:
 
             mousePos = pg.mouse.get_pos()
@@ -30,7 +33,7 @@ class Main_Menu:
 
                 if(event.type == pg.MOUSEBUTTONDOWN):
                     if(self.buttons[0].rect.collidepoint(mousePos)):
-                        game = classes.Game(self.screen)
+                        game = solo.Game(self.screen)
                         game.startGame()
 
                     if(self.buttons[1].rect.collidepoint(mousePos)):

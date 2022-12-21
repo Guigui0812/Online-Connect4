@@ -1,5 +1,5 @@
 import pygame as pg
-import classes
+import solo
 
 # Représente une partie
 class Game:
@@ -7,12 +7,21 @@ class Game:
     def __init__(self, screen):
         self.gameOver = False
         self.screen = screen
-        self.grid = classes.Grid()    
+        self.grid = solo.Grid()    
+        
+    def __check_win(self, player):
+
+        # Check if the player won
+        if self.grid.check_win(player) == True:
+            self.gameOver = True
+            # Display the winner screen
         
     # game loop de la partie
     def startGame(self):
 
         player = 1
+
+        pg.display.set_caption('Partie en cours')
 
         while self.gameOver == False:
 
@@ -35,7 +44,10 @@ class Game:
                     mouseX, mouseY = pg.mouse.get_pos()            
                     
                     if self.grid.set_box(mouseX, mouseY, player) == True:
+                        self.__check_win(player)
                         if player == 1:
                             player = 2
                         else:
                             player = 1
+            
+            

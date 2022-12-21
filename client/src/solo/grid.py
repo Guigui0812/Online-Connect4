@@ -1,7 +1,7 @@
 import pygame as pg
 import numpy as np
 
-import classes
+import solo
 
 ROW_COUNT = 6
 COLUMN_COUNT = 7
@@ -19,7 +19,7 @@ class Grid:
         # Set up the boxes
         for i in range(ROW_COUNT):
             for j in range(COLUMN_COUNT):
-                self.visualMatrix[i][j] = classes.Box(55 + j * 70, 120 + i * 70, 70, 70)
+                self.visualMatrix[i][j] = solo.Box(55 + j * 70, 120 + i * 70, 70, 70)
 
         self.listRowCpt = [5, 5, 5, 5, 5, 5, 5]
 
@@ -48,4 +48,31 @@ class Grid:
                         self.stateMatrix[self.listRowCpt[j]][j] = player
                         self.listRowCpt[j] -= 1
                         return True
+    
+    # Check if the game is over
+    def check_win(self, player):
+
+        # Check horizontal locations for win
+        for c in range(COLUMN_COUNT-3):
+            for r in range(ROW_COUNT):
+                if self.stateMatrix[r][c] == player and self.stateMatrix[r][c+1] == player and self.stateMatrix[r][c+2] == player and self.stateMatrix[r][c+3] == player:
+                    return True
+
+        # Check vertical locations for win
+        for c in range(COLUMN_COUNT):
+            for r in range(ROW_COUNT-3):
+                if self.stateMatrix[r][c] == player and self.stateMatrix[r+1][c] == player and self.stateMatrix[r+2][c] == player and self.stateMatrix[r+3][c] == player:
+                    return True
+
+        # Check positively sloped diaganols
+        for c in range(COLUMN_COUNT-3):
+            for r in range(ROW_COUNT-3):
+                if self.stateMatrix[r][c] == player and self.stateMatrix[r+1][c+1] == player and self.stateMatrix[r+2][c+2] == player and self.stateMatrix[r+3][c+3] == player:
+                    return True
+
+        # Check negatively sloped diaganols
+        for c in range(COLUMN_COUNT-3):
+            for r in range(3, ROW_COUNT):
+                if self.stateMatrix[r][c] == player and self.stateMatrix[r-1][c+1] == player and self.stateMatrix[r-2][c+2] == player and self.stateMatrix[r-3][c+3] == player:
+                    return True
                     
