@@ -12,7 +12,7 @@ class Box:
 
         # draw an empty box
         def draw_empty(self, screen):
-            pg.draw.circle(screen, "#9C9FA8", (self.rect.x + self.rect.width/2, self.rect.y + self.rect.height/2), 30)
+            pg.draw.circle(screen, "#DCDEE8", (self.rect.x + self.rect.width/2, self.rect.y + self.rect.height/2), 30)
 
         # draw a red box (player 1)
         def draw_red(self, screen):

@@ -16,8 +16,12 @@ class Game:
 
         while self.gameOver == False:
 
-            # Draw the game window
-            self.screen.fill('#9C9FA8')              
+            # Fill the screen with the background color depending on the player
+            if player == 1:
+                self.screen.fill('#FA6565')
+            else:
+                self.screen.fill('#FAD065')
+
             self.grid.draw(self.screen)
             pg.display.update()
 
