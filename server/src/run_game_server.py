@@ -6,6 +6,16 @@ import threading
 # - si data == "getPlayers", on envoie la liste des joueurs au client qui l'a demandé
 # - si data == "setPlayerCoin", on place la pièce du joueur sur la grille aux bonnes coordonnées
 
+# Choses intéressantes à faire : 
+# - joindre une base de données pour stocker les données des joueurs (victoires, compte etc...)
+# - Docker-compose pour lancer le serveur et la base de données en même temps 
+# - faire un système de chat pour les joueurs
+# - faire un système de lobby pour les joueurs (pour attendre le premier joueur avec un système de session)
+# - faire un système de matchmaking pour les joueurs (pour trouver un adversaire)
+# - faire un système de classement pour les joueurs (pour afficher les meilleurs joueurs)
+# - faire un système de statistiques pour les joueurs (pour afficher les statistiques des joueurs)
+# - faire un système de sauvegarde pour les joueurs (pour sauvegarder les parties des joueurs)
+
 class GameNetworkTread(threading.Thread):
 
     def __init__(self, host, port):

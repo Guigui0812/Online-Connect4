@@ -6,3 +6,5 @@ Install pygame with python3 :
 ```
 pip install pygame --pre
 ```
+
+This repository actually contains two projects in 1: a client to play single player and initiate a multiplayer game, and a server that allows to play online and contain several game sessions.
