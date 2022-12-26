@@ -1,5 +1,6 @@
 import threading
 import socket
+import pickle
 
 class Client_Thread(threading.Thread):
 
@@ -21,21 +22,44 @@ class Client_Thread(threading.Thread):
         while True:
 
             data = self.conn.recv(1024)
-            data = data.decode("utf8")
-            print(data)
 
-            if data == "get_player_nb":
-                self.send(str(self.gameID))
+            try:
+                data = data.decode("utf8")
+                print(data)
 
-            if data == "client_ready":
-                if self.game.game_ready():
-                    self.send("server_ready")
+                if data == "get_player_nb":
+                    self.send(str(self.gameID))
+
+                elif data == "client_ready":
+                    if self.game.game_ready():
+                        self.send("server_ready")
+                    else:
+                        self.send("server_not_ready")
+
+                elif data == "get_grid":
+                    # get the serialized grid object
+                    self.conn.sendall(self.game.grid.getSerialized())
+
+                elif data == "get_active_player":
+                    self.send(str(self.game.active_player))
+
+                else :
+                    print("client sent unknown string data")
+
+            except UnicodeDecodeError:
+
+                print("client sent binary data")
+
+                lastGrid = pickle.loads(data)  
+
+                if lastGrid["matrix"].isinstance(self.game.grid.matrix) and lastGrid["listRowCpt"].isinstance(self.game.grid.listRowCpt):
+                    self._grid.stateMatrix = pickle.loads(lastGrid["matrix"])
+                    self._grid.listRowCpt = pickle.loads(lastGrid["listRowCpt"])
+                    self.send("grid_updated")
+                         
                 else:
-                    self.send("server_not_ready")
-
-            if data == "get_grid":
-                # get the serialized grid object
-                self.conn.sendall(self.game.grid.getSerialized())
+                    print("client sent unknown binary data")
+                    self.send("grid_not_updated")
         
     # methods that allows server to respond to client's requests
     def send(self, data):

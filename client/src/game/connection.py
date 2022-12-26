@@ -30,7 +30,14 @@ class Connection:
         except ConnectionRefusedError:
             print("client failed to receive data from server")
 
-    def receive(self):
+    def sendBinary(self, data):
+        try:
+            self.socket.sendall(data)
+            print("client sent data to server")
+        except ConnectionRefusedError:
+            print("client failed to send data to server")
+
+    def receiveBinary(self):
         try:
             data = self.socket.recv(1024)
             print("client received", data)

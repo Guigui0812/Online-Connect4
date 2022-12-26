@@ -1,5 +1,6 @@
 import pygame as pg
 import numpy as np
+import pickle
 
 import game
 
@@ -43,14 +44,23 @@ class Grid:
 
             for j in range(COLUMN_COUNT):
                 if self.visualMatrix[self.listRowCpt[j]][j].rect.x < x < self.visualMatrix[self.listRowCpt[j]][j].rect.x + self.visualMatrix[self.listRowCpt[j]][j].rect.width :
-                    if self.stateMatrix[self.listRowCpt[j]][j] == 0:
-                        
+                    if self.stateMatrix[self.listRowCpt[j]][j] == 0:                        
                         self.stateMatrix[self.listRowCpt[j]][j] = player
                         self.listRowCpt[j] -= 1
                         return True
     
     def updateStateMatrix(self, stateMatrix):
         self.stateMatrix = stateMatrix
+
+    def getSerialized(self):
+
+        # dictionary that will be serialized
+        DictOfserializedObject = { "matrix" : pickle.dumps(self.stateMatrix), "listRowCpt" : pickle.dumps(self.listRowCpt) }
+
+        # serialize the dictionary
+        serializedObject = pickle.dumps(DictOfserializedObject)
+        # return the serialized object
+        return serializedObject
 
     # Check if the game is over
     def check_win(self, player):
