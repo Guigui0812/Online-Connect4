@@ -17,7 +17,7 @@ class Connection:
         try:
             data = data.encode("utf8")
             self.socket.sendall(data)
-            print("client sent data to server")
+            print("client sent ", data)
         except ConnectionRefusedError:
             print("client failed to send data to server")
 
@@ -25,22 +25,22 @@ class Connection:
         try:
             data = self.socket.recv(1024)
             data = data.decode("utf8")
-            print("client received", data)
+            print("client received ", data)
             return data
-        except ConnectionRefusedError:
+        except ConnectionAbortedError:
             print("client failed to receive data from server")
 
     def sendBinary(self, data):
         try:
             self.socket.sendall(data)
-            print("client sent data to server")
+            print("client sent ", data)
         except ConnectionRefusedError:
             print("client failed to send data to server")
 
     def receiveBinary(self):
         try:
             data = self.socket.recv(1024)
-            print("client received", data)
+            print("client received ", data)
             return data
         except ConnectionRefusedError:
             print("client failed to receive data from server")

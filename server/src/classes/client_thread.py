@@ -2,6 +2,7 @@ import threading
 import socket
 import pickle
 
+
 class Client_Thread(threading.Thread):
 
     nbClient = 0
@@ -25,7 +26,6 @@ class Client_Thread(threading.Thread):
 
             try:
                 data = data.decode("utf8")
-                print(data)
 
                 if data == "get_player_nb":
                     self.send(str(self.gameID))
@@ -43,25 +43,20 @@ class Client_Thread(threading.Thread):
                 elif data == "get_active_player":
                     self.send(str(self.game.active_player))
 
-                else :
-                    print("client sent unknown string data")
+            except:
 
-            except UnicodeDecodeError:
-
-                print("client sent binary data")
-
-                lastGrid = pickle.loads(data)  
-
+                lastGrid = pickle.loads(data)
+                               
                 if lastGrid["matrix"].isinstance(self.game.grid.matrix) and lastGrid["listRowCpt"].isinstance(self.game.grid.listRowCpt):
-                    self._grid.stateMatrix = pickle.loads(lastGrid["matrix"])
-                    self._grid.listRowCpt = pickle.loads(lastGrid["listRowCpt"])
                     self.send("grid_updated")
-                         
+                    self.game.grid.matrix = pickle.loads(lastGrid["matrix"])
+                    self.game.grid.listRowCpt = pickle.loads(lastGrid["listRowCpt"])
                 else:
                     print("client sent unknown binary data")
-                    self.send("grid_not_updated")
-        
+                    #self.send("grid_not_updated")
+
     # methods that allows server to respond to client's requests
+
     def send(self, data):
         data = data.encode("utf8")
         self.conn.sendall(data)

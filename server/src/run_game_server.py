@@ -36,10 +36,10 @@ print("server is listening on port", port)
 
 while True:
     socket.listen() # the server listen for connections
-    print("server is listening for connections")
+    #print("server is listening for connections")
 
     connection, address = socket.accept()
-    print("connection from", address)
+   # print("connection from", address)
 
     classes.Client_Thread.nbClient += 1
     
