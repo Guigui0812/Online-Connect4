@@ -1,7 +1,7 @@
 import pygame as pg
 import numpy as np
 
-import solo
+import game
 
 ROW_COUNT = 6
 COLUMN_COUNT = 7
@@ -19,7 +19,7 @@ class Grid:
         # Set up the boxes
         for i in range(ROW_COUNT):
             for j in range(COLUMN_COUNT):
-                self.visualMatrix[i][j] = solo.Box(55 + j * 70, 120 + i * 70, 70, 70)
+                self.visualMatrix[i][j] = game.Box(55 + j * 70, 120 + i * 70, 70, 70)
 
         self.listRowCpt = [5, 5, 5, 5, 5, 5, 5]
 

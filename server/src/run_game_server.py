@@ -1,5 +1,5 @@
 import socket
-import threading
+import classes
 
 # Ici, en fonction de la valeur qu'aura la data, on pourra faire des actions différentes :
 # - si data == "getGrid", on envoie la grille au client qui l'a demandé
@@ -27,38 +27,35 @@ import threading
 # - un serveur pour le chat
 # - un serveur pour le jeu
 
-# Deux threads différents pour gérer le chat et le jeu
-
-class ClientGameThread(threading.Thread):
-
-# objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
-# objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
-# session terminée quand la partie est finie et que les joueurs ne veulent pas rejouer
-
-    def __init__(self, conn):
-        threading.Thread.__init__(self)
-        self.conn = conn
-
-    def run(self):
-        data = self.conn.recv(1024)
-        data = data.decode("utf8")
-        print(data)
-
 host, port = 'localhost', 12345
+gameID = 1
+
+
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.bind((host, port))
 print("server is listening on port", port)
 
+classes.Game.games.append(classes.Game())
+
 while True:
     socket.listen() # the server listen for connections
     print("server is listening for connections")
+
     connection, address = socket.accept()
     print("connection from", address)
 
-    client_thread = ClientGameThread(connection)
+    classes.Client_Thread.nbClient += 1
+    
+    if classes.Client_Thread.nbClient % 2 == 0:
+        classes.Game.games.append(classes.Game())
+    client_thread = classes.Client_Thread(connection, classes.Game.games[-1], gameID)
+    gameID += 1
     client_thread.start()
 
-    connection.sendall(b"Hello, world!")
+    if gameID == 2:
+        gameID = 1
+  
+    #connection.sendall(b"Hello, world!")
 
 connection.close()
 socker.close()

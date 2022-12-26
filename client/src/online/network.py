@@ -28,4 +28,3 @@ finally:
 
     socket.close()
     print("client closed connection")
-

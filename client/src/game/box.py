@@ -1,8 +1,6 @@
 import pygame as pg
 import numpy as np
 
-import solo
-
 # Represents a box in the grid (just visual)
 class Box:
     
