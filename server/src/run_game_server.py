@@ -30,12 +30,9 @@ import classes
 host, port = 'localhost', 12345
 gameID = 1
 
-
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.bind((host, port))
 print("server is listening on port", port)
-
-classes.Game.games.append(classes.Game())
 
 while True:
     socket.listen() # the server listen for connections
@@ -46,16 +43,14 @@ while True:
 
     classes.Client_Thread.nbClient += 1
     
-    if classes.Client_Thread.nbClient % 2 == 0:
+    if classes.Client_Thread.nbClient % 2 == 1:
         classes.Game.games.append(classes.Game())
     client_thread = classes.Client_Thread(connection, classes.Game.games[-1], gameID)
     gameID += 1
     client_thread.start()
 
-    if gameID == 2:
+    if gameID > 2:
         gameID = 1
-  
-    #connection.sendall(b"Hello, world!")
 
 connection.close()
 socker.close()

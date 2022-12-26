@@ -8,14 +8,13 @@ class Solo_Game(game.Game):
 
     def __check_win(self):
 
-        # Check if the self.self._playerNb won
         if self._grid.check_win(self._playerNb) == True:
             self._gameOver = True
 
             # Display the winner _screen
         
     # game loop de la partie
-    def startGame(self):
+    def start_game(self):
 
         pg.display.set_caption('Partie en cours')
 

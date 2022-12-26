@@ -49,6 +49,9 @@ class Grid:
                         self.listRowCpt[j] -= 1
                         return True
     
+    def updateStateMatrix(self, stateMatrix):
+        self.stateMatrix = stateMatrix
+
     # Check if the game is over
     def check_win(self, player):
 

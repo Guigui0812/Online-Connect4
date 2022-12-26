@@ -9,4 +9,11 @@ class Game:
         self.grid = classes.Grid()
         self.active_player = 1
         self.end = False
+        self.nbOfPlayers = 0
+
+    def game_ready(self):
+        if self.nbOfPlayers == 2:
+            return True
+        else:
+            return False
         

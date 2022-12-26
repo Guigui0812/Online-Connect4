@@ -34,8 +34,8 @@ class Main_Menu:
                 if(event.type == pg.MOUSEBUTTONDOWN):
                     if(self.buttons[0].rect.collidepoint(mousePos)):
                         game = gameAssets.Solo_Game(self.screen)
-                        game.startGame()
+                        game.start_game()
 
                     if(self.buttons[1].rect.collidepoint(mousePos)):
                         game = gameAssets.Online_Game(self.screen)
-                        game.startGame()
+                        game.start_game()
