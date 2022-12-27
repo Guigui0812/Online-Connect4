@@ -20,10 +20,12 @@ class Online_Game(game.Game):
         self._connection.sendStr("get_player_nb")
         data = self._connection.receiveStr()
         self._playerNb = int(data)
+        print("player number: ", self._playerNb)
 
+        print("waiting for server to be ready")
         # Wait for the server to be ready
         while data != "server_ready":
-            print("waiting for server to be ready")
+            
             self._connection.sendStr("client_ready")
             data = self._connection.receiveStr()
 
@@ -33,10 +35,23 @@ class Online_Game(game.Game):
                 if event.type == pg.QUIT:
                     pg.quit()
         
+        print("server ready")
         # Start the game
         while self._gameOver == False:
 
             # Faire dans la classe connexion pour plus de propreté
+
+            self._connection.sendStr("check_win")
+            data = self._connection.receiveStr()
+            if data != "no_win":
+                if data == ("Player " + str(self._playerNb)+ " win") :
+                    self._gameOver = True
+                    print("You win")
+                    # Display the winner _screen
+                else: 
+                    self._gameOver = True
+                    print("You loose")
+                    # Display the loser _screen
 
             # Ask the server for who's turn it is
             self._connection.sendStr("get_active_player")
@@ -78,6 +93,7 @@ class Online_Game(game.Game):
                         if self._grid.set_box(mouseX, mouseY, self._playerNb) == True: 
                                                     
                             self._connection.sendBinary(self._grid.getSerialized())
-                            
-                            data = self._connection.receiveStr()                      
-                            
+                            data = self._connection.receiveStr()   
+
+                            self._connection.sendStr("check_win")
+                            data = self._connection.receiveStr()

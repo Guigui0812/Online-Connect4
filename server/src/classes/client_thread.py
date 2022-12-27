@@ -1,7 +1,5 @@
 import threading
-import socket
 import pickle
-
 
 class Client_Thread(threading.Thread):
 
@@ -44,24 +42,35 @@ class Client_Thread(threading.Thread):
                 elif data == "get_active_player":
                     self.send(str(self.game.active_player))
 
+                elif data == "check_win":
+
+                    if self.game.end == True:                    
+                        if self.game.active_player == 1:
+                            self.send("Player 1 win")
+                        else:
+                            self.send("Player 2 win")
+                    else:
+                        self.send("no_win")
+
             except:
                 # update the grid
                 data = pickle.loads(data)
 
-                
+                # if is a dictionary process it
+                if type(data) == dict:
+            
+                    self.send("grid_updated")
+                    self.game.grid.matrix = pickle.loads(data["matrix"])
+                    self.game.grid.listRowCpt = pickle.loads(data["listRowCpt"])
 
-                self.send("grid_updated")
-                self.game.grid.matrix = pickle.loads(data["matrix"])
-                self.game.grid.listRowCpt = pickle.loads(data["listRowCpt"])
-
-                # change the active player
-                if self.game.active_player == 1:
-                    self.game.active_player = 2
-                else:
-                    self.game.active_player = 1
-
-    # methods that allows server to respond to client's requests
-
+                    if self.game.check_win() == False:
+                        # change the active player
+                        if self.game.active_player == 1:
+                            self.game.active_player = 2
+                        else:
+                            self.game.active_player = 1
+    
+    # send a string to the client
     def send(self, data):
         data = data.encode("utf8")
         self.conn.sendall(data)
