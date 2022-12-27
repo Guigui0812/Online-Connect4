@@ -70,6 +70,7 @@ class Online_Game(game.Game):
                     pg.quit()
 
                 if self.activePlayer == self._playerNb:
+
                     if event.type == pg.MOUSEBUTTONDOWN:  
 
                         mouseX, mouseY = pg.mouse.get_pos()
@@ -77,5 +78,6 @@ class Online_Game(game.Game):
                         if self._grid.set_box(mouseX, mouseY, self._playerNb) == True: 
                                                     
                             self._connection.sendBinary(self._grid.getSerialized())
+                            
                             data = self._connection.receiveStr()                      
                             

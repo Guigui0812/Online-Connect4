@@ -40,20 +40,25 @@ class Client_Thread(threading.Thread):
                     # get the serialized grid object
                     self.conn.sendall(self.game.grid.getSerialized())
 
+                # get the active player
                 elif data == "get_active_player":
                     self.send(str(self.game.active_player))
 
             except:
+                # update the grid
+                data = pickle.loads(data)
 
-                lastGrid = pickle.loads(data)
-                               
-                if lastGrid["matrix"].isinstance(self.game.grid.matrix) and lastGrid["listRowCpt"].isinstance(self.game.grid.listRowCpt):
-                    self.send("grid_updated")
-                    self.game.grid.matrix = pickle.loads(lastGrid["matrix"])
-                    self.game.grid.listRowCpt = pickle.loads(lastGrid["listRowCpt"])
+                
+
+                self.send("grid_updated")
+                self.game.grid.matrix = pickle.loads(data["matrix"])
+                self.game.grid.listRowCpt = pickle.loads(data["listRowCpt"])
+
+                # change the active player
+                if self.game.active_player == 1:
+                    self.game.active_player = 2
                 else:
-                    print("client sent unknown binary data")
-                    #self.send("grid_not_updated")
+                    self.game.active_player = 1
 
     # methods that allows server to respond to client's requests
 
