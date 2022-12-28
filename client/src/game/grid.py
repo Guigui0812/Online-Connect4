@@ -52,7 +52,7 @@ class Grid:
     def get_serialized_matrix(self):
 
         # dictionary that will be serialized
-        DictOfserializedObject = { "matrix" : pickle.dumps(self.box_status_matrix), "max_column_stacking" : pickle.dumps(self.max_column_stacking) }
+        DictOfserializedObject = { "box_status_matrix" : pickle.dumps(self.box_status_matrix), "max_column_stacking" : pickle.dumps(self.max_column_stacking) }
 
         # serialize the dictionary
         serializedObject = pickle.dumps(DictOfserializedObject)

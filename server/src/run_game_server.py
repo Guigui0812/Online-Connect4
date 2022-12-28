@@ -41,11 +41,11 @@ while True:
     connection, address = socket.accept()
     print("connection from", address)
 
-    game.Client_Thread.number_of_clients += 1
+    game.ClientThread.number_of_clients += 1
     
-    if game.Client_Thread.number_of_clients % 2 == 1:
-        game.Game.games.append(game.Game())
-    client_thread = game.Client_Thread(connection, game.Game.games[-1], player_number)
+    if game.ClientThread.number_of_clients % 2 == 1:
+        game.Game.number_of_games.append(game.Game())
+    client_thread = game.ClientThread(connection, game.Game.number_of_games[-1], player_number)
     player_number += 1
     client_thread.start()
 

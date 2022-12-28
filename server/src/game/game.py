@@ -3,7 +3,7 @@ import game
 # Représente une partie
 class Game:
 
-    games = []
+    number_of_games = []
 
     def __init__(self):
         self.grid = game.Grid()

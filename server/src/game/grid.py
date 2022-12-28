@@ -16,12 +16,12 @@ class Grid:
     def get_serialized_box_status_matrix(self):
 
         # dictionary that will be serialized
-        DictOfserializedObject = { "box_status_matrix" : pickle.dumps(self.box_status_matrix), "max_column_stacking" : pickle.dumps(self.max_column_stacking) }
+        serialized_objects_dict = { "box_status_matrix" : pickle.dumps(self.box_status_matrix), "max_column_stacking" : pickle.dumps(self.max_column_stacking) }
 
         # serialize the dictionary
-        serializedObject = pickle.dumps(DictOfserializedObject)
+        serialized_dict = pickle.dumps(serialized_objects_dict)
         # return the serialized object
-        return serializedObject
+        return serialized_dict
 
     # Check if the game is over
     def check_win(self, player):

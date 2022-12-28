@@ -9,11 +9,11 @@ class ClientThread(threading.Thread):
 # objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
 # session terminée quand la partie est finie et que les joueurs ne veulent pas rejouer
 
-    def __init__(self, connection, game, sessionIdentifier):
+    def __init__(self, connection, game, session_identifier):
         threading.Thread.__init__(self)
         self.connection = connection
         self.game = game
-        self.sessionIdentifier = sessionIdentifier
+        self.session_identifier = session_identifier
         self.game.number_of_players += 1
 
     def run(self):
@@ -26,7 +26,7 @@ class ClientThread(threading.Thread):
                 data = data.decode("utf8")
 
                 if data == "get_player_nb":
-                    self.send(str(self.sessionIdentifier))
+                    self.send(str(self.session_identifier))
 
                 elif data == "client_ready":
                     if self.game.game_ready():

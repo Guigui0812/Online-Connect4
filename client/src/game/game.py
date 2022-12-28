@@ -4,7 +4,7 @@ import game
 # Représente une partie
 class Game():
 
-    def __init__(self, screen):
+    def __init__(self, screen, width, height):
         self._end = False
         self._screen = screen
         self._player_number = 1

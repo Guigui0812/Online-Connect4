@@ -1,34 +1,37 @@
 import pygame as pg
 import game
 import pickle
+import menu
 
 class OnlineGame(game.Game):
 
     # Constructor
     def __init__(self, screen):
         game.Game.__init__(self, screen)
-        self._connection = game.Connection()
+        self._client_network = game.Network()
         self.active_player = 1
         
     # game loop
     def start_game(self):
 
         # Connect to the server
-        self._connection.connect()
+        self._client_network.connect()
 
         # Get the player number from the server
-        self._connection.send_string("get_player_nb")
-        data = self._connection.receive_string()
+        self._client_network.send_string("get_player_nb")
+        data = self._client_network.receive_string()
         self._player_number = int(data)
         print("player number: ", self._player_number)
 
         print("waiting for server to be ready")
+
+        waiting_screen = menu.WaitingScreen(self._screen, self.width, self.height)
         # Wait for the server to be ready
         while data != "server_ready":
             
-            self._connection.send_string("client_ready")
-            data = self._connection.receive_string()
-
+            self._client_network.send_string("client_ready")
+            data = self._client_network.receive_string()
+            waiting_screen.draw()
             # créer écran de chargement
 
             for event in pg.event.get():
@@ -41,8 +44,8 @@ class OnlineGame(game.Game):
 
             # Faire dans la classe connexion pour plus de propreté
 
-            self._connection.send_string("check_win")
-            data = self._connection.receive_string()
+            self._client_network.send_string("check_win")
+            data = self._client_network.receive_string()
             if data != "no_win":
                 if data == ("Player " + str(self._player_number)+ " win") :
                     self._end = True
@@ -54,17 +57,17 @@ class OnlineGame(game.Game):
                     # Display the loser _screen
 
             # Ask the server for who's turn it is
-            self._connection.send_string("get_active_player")
-            actualPlayer = int(self._connection.receive_string())
+            self._client_network.send_string("get_active_player")
+            actualPlayer = int(self._client_network.receive_string())
             
             if actualPlayer != self.active_player:
 
                 self.active_player = actualPlayer
                 # Ask the server for the grid and update it
-                self._connection.send_string("get_grid")
-                serialized_server_grid = self._connection.receive_data() 
+                self._client_network.send_string("get_grid")
+                serialized_server_grid = self._client_network.receive_data() 
                 lastGrid = pickle.loads(serialized_server_grid)   
-                self._grid.box_status_matrix = pickle.loads(lastGrid["matrix"])
+                self._grid.box_status_matrix = pickle.loads(lastGrid["box_status_matrix"])
                 self._grid.max_column_stacking = pickle.loads(lastGrid["max_column_stacking"])
 
             # Fill the _screen with the background color depending on the self.self._player_number
@@ -81,7 +84,7 @@ class OnlineGame(game.Game):
                 if event.type == pg.QUIT:
 
                     # Close the connection (finir)
-                    #self._connection.send_string("close_connection")
+                    #self._client_network.send_string("close_client_network")
                     pg.quit()
 
                 if self.active_player == self._player_number:
@@ -92,8 +95,8 @@ class OnlineGame(game.Game):
 
                         if self._grid.set_box(mouseX, mouseY, self._player_number) == True: 
                                                     
-                            self._connection.send_data(self._grid.get_serialized_matrix())
-                            data = self._connection.receive_string()   
+                            self._client_network.send_data(self._grid.get_serialized_matrix())
+                            data = self._client_network.receive_string()   
 
-                            self._connection.send_string("check_win")
-                            data = self._connection.receive_string()
+                            self._client_network.send_string("check_win")
+                            data = self._client_network.receive_string()
