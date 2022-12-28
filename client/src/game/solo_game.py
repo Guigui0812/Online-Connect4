@@ -3,8 +3,8 @@ import game
 
 class SoloGame(game.Game):
 
-    def __init__(self, _screen):
-        game.Game.__init__(self, _screen)
+    def __init__(self, _screen, width, height):
+        game.Game.__init__(self, _screen,  width, height)
 
     def __check_win(self):
 
@@ -31,7 +31,7 @@ class SoloGame(game.Game):
 
             # Event loop
             for event in pg.event.get():
-                
+
                 if event.type == pg.QUIT:
                     pg.quit()
 

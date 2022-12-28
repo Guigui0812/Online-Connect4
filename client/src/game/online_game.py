@@ -6,11 +6,16 @@ import menu
 class OnlineGame(game.Game):
 
     # Constructor
-    def __init__(self, screen):
-        game.Game.__init__(self, screen)
+    def __init__(self, screen, width, height):
+        game.Game.__init__(self, screen, width, height)
         self._client_network = game.Network()
         self.active_player = 1
         
+    def __event_handler(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+    
     # game loop
     def start_game(self):
 
@@ -26,18 +31,19 @@ class OnlineGame(game.Game):
         print("waiting for server to be ready")
 
         waiting_screen = menu.WaitingScreen(self._screen, self.width, self.height)
+        waiting_screen.start()
         # Wait for the server to be ready
         while data != "server_ready":
             
             self._client_network.send_string("client_ready")
             data = self._client_network.receive_string()
-            waiting_screen.draw()
-            # créer écran de chargement
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     pg.quit()
         
+        waiting_screen.stop()
+
         print("server ready")
         # Start the game
         while self._end == False:

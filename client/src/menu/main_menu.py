@@ -4,12 +4,14 @@ import game
 
 class MainMenu:
 
-    def __init__(self, screen, widht, height):
-        start_button = menu.Button('Jouer', (widht / 2 - 130, height / 2 - 20), screen)
-        online_button = menu.Button('Online', (widht / 2 - 130, height / 2 + 30), screen)
+    def __init__(self, screen, width, height):
+        start_button = menu.Button('Jouer', (width / 2 - 130, height / 2 - 20), screen)
+        online_button = menu.Button('Online', (width / 2 - 130, height / 2 + 30), screen)
         self.buttons = [start_button, online_button]
         self.screen = screen
         self.running = True
+        self.width = width
+        self.height = height
 
     def __draw_menu(self):
 
@@ -33,9 +35,9 @@ class MainMenu:
 
                 if(event.type == pg.MOUSEBUTTONDOWN):
                     if(self.buttons[0].rect.collidepoint(mouse_position)):
-                        new_game = game.SoloGame(self.screen)
+                        new_game = game.SoloGame(self.screen, self.width, self.height)
                         new_game.start_game()
 
                     if(self.buttons[1].rect.collidepoint(mouse_position)):
-                        new_game = game.OnlineGame(self.screen)
+                        new_game = game.OnlineGame(self.screen, self.width, self.height)
                         new_game.start_game()

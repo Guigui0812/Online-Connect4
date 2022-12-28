@@ -8,8 +8,10 @@ class Game():
         self._end = False
         self._screen = screen
         self._player_number = 1
-        self._grid = game.Grid()               
-
+        self._grid = game.Grid()     
+        self.width = width
+        self.height = height
+        
     def __check_win(self):
         pass
 
