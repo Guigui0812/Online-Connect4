@@ -1,4 +1,4 @@
-import classes
+import game
 
 # Représente une partie
 class Game:
@@ -6,13 +6,13 @@ class Game:
     games = []
 
     def __init__(self):
-        self.grid = classes.Grid()
+        self.grid = game.Grid()
         self.active_player = 1
         self.end = False
-        self.nbOfPlayers = 0
+        self.number_of_players = 0
 
     def game_ready(self):
-        if self.nbOfPlayers == 2:
+        if self.number_of_players == 2:
             return True
         else:
             return False

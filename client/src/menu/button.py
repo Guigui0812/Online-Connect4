@@ -2,12 +2,12 @@ import pygame as pg
 
 class Button:
 
-    def __init__(self, txt, pos, screen):
+    def __init__(self, txt, position, screen):
         self.string = txt
-        self.pos = pos
+        self.position = position
         self.font = pg.font.Font('../assets/Starborn.ttf', 26)
         self.screen = screen
-        self.rect = pg.rect.Rect((self.pos[0], self.pos[1]), (260, 40))
+        self.rect = pg.rect.Rect((self.position[0], self.position[1]), (260, 40))
 
     def draw(self, screen):
 
@@ -20,7 +20,7 @@ class Button:
         screen.blit(text, text_rect)
 
     def check_clicked(self):
-        if self.rect.collidepoint(pg.mouse.get_pos()) and pg.mouse.get_pressed()[0]:
+        if self.rect.collidepoint(pg.mouse.get_position()) and pg.mouse.get_pressed()[0]:
             return True
         else:
             return False

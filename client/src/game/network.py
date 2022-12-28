@@ -1,6 +1,6 @@
 import socket
 
-class Connection:
+class Network:
 
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,7 +13,7 @@ class Connection:
         except ConnectionRefusedError:
             print("client failed to connect to server")
 
-    def sendStr(self, data):
+    def send_string(self, data):
         try:
             data = data.encode("utf8")
             self.socket.sendall(data)
@@ -21,7 +21,7 @@ class Connection:
         except ConnectionRefusedError:
             print("client failed to send data to server")
 
-    def receiveStr(self):
+    def receive_string(self):
         try:
             data = self.socket.recv(1024)
             data = data.decode("utf8")
@@ -30,14 +30,14 @@ class Connection:
         except ConnectionAbortedError:
             print("client failed to receive data from server")
 
-    def sendBinary(self, data):
+    def send_data(self, data):
         try:
             self.socket.sendall(data)
             print("client sent ", data)
         except ConnectionRefusedError:
             print("client failed to send data to server")
 
-    def receiveBinary(self):
+    def receive_data(self):
         try:
             data = self.socket.recv(1024)
             print("client received ", data)

@@ -1,5 +1,5 @@
 import socket
-import classes
+import game
 
 # Ici, en fonction de la valeur qu'aura la data, on pourra faire des actions différentes :
 # - si data == "getGrid", on envoie la grille au client qui l'a demandé
@@ -28,7 +28,7 @@ import classes
 # - un serveur pour le jeu
 
 host, port = 'localhost', 12345
-gameID = 1
+player_number = 1
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.bind((host, port))
@@ -36,21 +36,21 @@ print("server is listening on port", port)
 
 while True:
     socket.listen() # the server listen for connections
-    #print("server is listening for connections")
+    print("server is listening for connections")
 
     connection, address = socket.accept()
-   # print("connection from", address)
+    print("connection from", address)
 
-    classes.Client_Thread.nbClient += 1
+    game.Client_Thread.number_of_clients += 1
     
-    if classes.Client_Thread.nbClient % 2 == 1:
-        classes.Game.games.append(classes.Game())
-    client_thread = classes.Client_Thread(connection, classes.Game.games[-1], gameID)
-    gameID += 1
+    if game.Client_Thread.number_of_clients % 2 == 1:
+        game.Game.games.append(game.Game())
+    client_thread = game.Client_Thread(connection, game.Game.games[-1], player_number)
+    player_number += 1
     client_thread.start()
 
-    if gameID > 2:
-        gameID = 1
+    if player_number > 2:
+        player_number = 1
 
 connection.close()
 socker.close()

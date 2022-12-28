@@ -1,32 +1,32 @@
 import threading
 import pickle
 
-class Client_Thread(threading.Thread):
+class ClientThread(threading.Thread):
 
-    nbClient = 0
+    number_of_clients = 0
 
 # objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
 # objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
 # session terminée quand la partie est finie et que les joueurs ne veulent pas rejouer
 
-    def __init__(self, conn, game, gameID):
+    def __init__(self, connection, game, sessionIdentifier):
         threading.Thread.__init__(self)
-        self.conn = conn
+        self.connection = connection
         self.game = game
-        self.gameID = gameID
-        self.game.nbOfPlayers += 1
+        self.sessionIdentifier = sessionIdentifier
+        self.game.number_of_players += 1
 
     def run(self):
 
         while True:
 
-            data = self.conn.recv(1024)
+            data = self.connection.recv(1024)
 
             try:
                 data = data.decode("utf8")
 
                 if data == "get_player_nb":
-                    self.send(str(self.gameID))
+                    self.send(str(self.sessionIdentifier))
 
                 elif data == "client_ready":
                     if self.game.game_ready():
@@ -36,7 +36,7 @@ class Client_Thread(threading.Thread):
 
                 elif data == "get_grid":
                     # get the serialized grid object
-                    self.conn.sendall(self.game.grid.getSerialized())
+                    self.connection.sendall(self.game.grid.get_serialized_box_status_matrix())
 
                 # get the active player
                 elif data == "get_active_player":
@@ -60,8 +60,8 @@ class Client_Thread(threading.Thread):
                 if type(data) == dict:
             
                     self.send("grid_updated")
-                    self.game.grid.matrix = pickle.loads(data["matrix"])
-                    self.game.grid.listRowCpt = pickle.loads(data["listRowCpt"])
+                    self.game.grid.box_status_matrix = pickle.loads(data["box_status_matrix"])
+                    self.game.grid.max_column_stacking = pickle.loads(data["max_column_stacking"])
 
                     if self.game.check_win() == False:
                         # change the active player
@@ -73,4 +73,4 @@ class Client_Thread(threading.Thread):
     # send a string to the client
     def send(self, data):
         data = data.encode("utf8")
-        self.conn.sendall(data)
+        self.connection.sendall(data)
