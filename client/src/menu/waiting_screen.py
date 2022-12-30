@@ -16,26 +16,30 @@ class WaitingScreen(threading.Thread):
         self._text = "En attente d\'un joueur..."
         self.width = width
         self.height = height
-        self.font = pygame.font.Font('../assets/Starborn.ttf', 26)
+        self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 30)
         self.clock = pygame.time.Clock()
 
     def run(self):
 
-        radius = 50
-        x, y = 320, 240
-        color = (255, 255, 255)
+        radius = 10
+        x, y = 300, 320
+        color = (61, 120, 255)
         counter = 0
         num_frames = 60
 
         while self._running:
 
             self._screen.fill('#C2C5CD')
+
+            text = self.font.render(self._text, True, (223, 59, 15))
+            text_rect = text.get_rect(center=(self.width/2, self.height/2))
+            self._screen.blit(text, text_rect)   
             
             angle = 360 * counter / num_frames
     
             # Calculate the new position of the circle based on the angle
-            x = int(320 + radius * math.cos(math.radians(angle)))
-            y = int(240 + radius * math.sin(math.radians(angle)))
+            x = int(300 + radius * math.cos(math.radians(angle)))
+            y = int(350 + radius * math.sin(math.radians(angle)))
             
             # Draw the circle to the screen with anti-aliasing and fill
             pygame.gfxdraw.filled_circle(self._screen, x, y, radius, color)
