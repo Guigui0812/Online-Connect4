@@ -80,7 +80,7 @@ class OnlineGame(game.Game):
             if self.active_player == 1:
                 self._screen.fill('#FA6565')
             else:
-                self._screen.fill('#FAD065')
+                self._screen.fill('#58A4FF')
 
             self._grid.draw(self._screen)
             pg.display.update()

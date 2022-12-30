@@ -1,5 +1,7 @@
 import pygame
 import threading
+import pygame.gfxdraw
+import math
 
 # Improvmement: 
 # - Use a thread to handle the waiting screen
@@ -19,12 +21,31 @@ class WaitingScreen(threading.Thread):
 
     def run(self):
 
+        radius = 50
+        x, y = 320, 240
+        color = (255, 255, 255)
+        counter = 0
+        num_frames = 60
+
         while self._running:
+
             self._screen.fill('#C2C5CD')
-            text = self.font.render(self._text, True, "#DDDEEB")
-            text_rect = text.get_rect(center=(self.width/2, self.height/2))
-            self._screen.blit(text, text_rect)   
+            
+            angle = 360 * counter / num_frames
+    
+            # Calculate the new position of the circle based on the angle
+            x = int(320 + radius * math.cos(math.radians(angle)))
+            y = int(240 + radius * math.sin(math.radians(angle)))
+            
+            # Draw the circle to the screen with anti-aliasing and fill
+            pygame.gfxdraw.filled_circle(self._screen, x, y, radius, color)
+                   
             pygame.display.update()
+            counter += 1
+            
+            if counter == num_frames:
+                counter = 0
+
             self.clock.tick(60)
 
     def stop(self):

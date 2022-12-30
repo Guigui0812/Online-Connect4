@@ -24,7 +24,7 @@ class SoloGame(game.Game):
             if self._player_number == 1:
                 self._screen.fill('#FA6565')
             else:
-                self._screen.fill('#FAD065')
+                self._screen.fill('#58A4FF')
 
             self._grid.draw(self._screen)
             pg.display.update()
