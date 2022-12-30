@@ -1,4 +1,4 @@
-import pygame as pg
+import pygame
 import threading
 
 # Improvmement: 
@@ -14,14 +14,18 @@ class WaitingScreen(threading.Thread):
         self._text = "En attente d\'un joueur..."
         self.width = width
         self.height = height
-        self.font = pg.font.Font('../assets/Starborn.ttf', 26)
+        self.font = pygame.font.Font('../assets/Starborn.ttf', 26)
+        self.clock = pygame.time.Clock()
 
     def run(self):
-        self._screen.fill('#898A9C')
-        text = self.font.render(self._text, True, "#DDDEEB")
-        text_rect = text.get_rect(center=(self.width/2, self.height/2))
-        self._screen.blit(text, text_rect)   
-        pg.display.update()
+
+        while self._running:
+            self._screen.fill('#C2C5CD')
+            text = self.font.render(self._text, True, "#DDDEEB")
+            text_rect = text.get_rect(center=(self.width/2, self.height/2))
+            self._screen.blit(text, text_rect)   
+            pygame.display.update()
+            self.clock.tick(60)
 
     def stop(self):
         self._running = False

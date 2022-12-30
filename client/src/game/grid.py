@@ -27,8 +27,8 @@ class Grid:
     # Draw the grid in the given screen
     def draw(self, screen):
 
-        self.rect = pg.rect.Rect((55, 120), (490, 420))
-        pg.draw.rect(screen, "#2B3FE8", self.rect, 0, 5) 
+        self.rect = pg.rect.Rect((45, 110), (510, 440))
+        pg.draw.rect(screen, "#798192", self.rect, 0, 30) 
        
         for i in range(ROW_COUNT):
             for j in range(COLUMN_COUNT):

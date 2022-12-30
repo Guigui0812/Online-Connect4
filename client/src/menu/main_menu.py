@@ -25,7 +25,7 @@ class MainMenu:
         while self.running:
 
             mouse_position = pg.mouse.get_pos()
-            self.screen.fill('#898A9C')
+            self.screen.fill('#C2C5CD')
             self.__draw_menu()
             pg.display.update()
 
