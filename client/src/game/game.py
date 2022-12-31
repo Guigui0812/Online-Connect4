@@ -11,7 +11,7 @@ class Game():
         self.width = width
         self.height = height
         
-    def __check_win(self):
+    def _check_win(self):
         pass
 
     def start_game(self):
