@@ -10,6 +10,7 @@ class Game:
         self.active_player = 1
         self.end = False
         self.number_of_players = 0
+        self.player_left = False
 
     def game_ready(self):
         if self.number_of_players == 2:

@@ -3,7 +3,6 @@ import game
 import pickle
 import menu
 
-
 class OnlineGame(game.Game):
 
     # Constructor
@@ -12,13 +11,13 @@ class OnlineGame(game.Game):
         self._client_network = game.Network()
         self.active_player = 1
 
+    # Event loop
     def _event_handler(self):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
 
-                # Close the connection (finir)
-                # self._client_network.send_string("close_client_network")
+                self.__disconnect()
                 pygame.quit()
 
             if self.active_player == self._player_number:
@@ -36,6 +35,31 @@ class OnlineGame(game.Game):
                         self._client_network.send_string("check_win")
                         data = self._client_network.receive_string()
 
+    # Handle disconnection
+    def __disconnect(self):   
+
+        self._client_network.send_string("close_client_network")
+        data = self._client_network.receive_string()
+
+        if data == "client_network_closed":
+            self._client_network.close()
+            self._end = True
+            print("Disconnected")
+
+    def __check_client_alive(self):
+
+        self._client_network.send_string("check_client_alive")
+        data = self._client_network.receive_string()
+
+        if data == "client_lost":
+            self._end = True
+            self._client_network.close()    
+            print("Other player disconnected")
+            return False
+            
+        return True
+            
+    # Check if the game is over
     def __check_win(self):
 
         self._client_network.send_string("check_win")
@@ -50,6 +74,7 @@ class OnlineGame(game.Game):
                 print("You loose")
                 # Display the loser _screen
 
+    # Update the grid
     def __update_grid(self):
 
         # Ask the server for the grid and update it
@@ -71,6 +96,7 @@ class OnlineGame(game.Game):
             self.active_player = actualPlayer
             self.__update_grid()
 
+    # Draw the grid
     def _draw_grid(self):
 
         # Fill the screen with the color depending on the player
@@ -82,6 +108,7 @@ class OnlineGame(game.Game):
         self._grid.draw(self._screen)
         pygame.display.update()
 
+    # Wait for the server to be ready
     def __wait_for_server(self):
 
         print("waiting for server to be ready")
@@ -89,14 +116,19 @@ class OnlineGame(game.Game):
         waiting_screen = menu.WaitingScreen(
             self._screen, self.width, self.height)
         waiting_screen.start()
+
+        server_ready = False
+
         # Wait for the server to be ready
-        while data != "server_ready":
+        while server_ready == False:
 
             self._client_network.send_string("client_ready")
             data = self._client_network.receive_string()
 
-        waiting_screen.stop()
+            if data == "server_ready":
+                server_ready = True
 
+        waiting_screen.stop()
         print("server ready")
 
     # Get the player number from the server
@@ -108,31 +140,32 @@ class OnlineGame(game.Game):
         self._player_number = int(data)
         print("player number: ", self._player_number)
 
-    # gameloop
+    # Game loop
     def start_game(self):
 
         # Connect to the server
-        self._client_network.connect()
+        if self._client_network.connect():
 
-        # Get the player number from the server
-        self.__get_player_number()
-        
-        # Wait for the server to be ready
-        self.__wait_for_server()
+            # Get the player number from the server
+            self.__get_player_number()
+            
+            # Wait for the server to be ready
+            self.__wait_for_server()
 
-        # Start the game
-        while self._end == False:
+            # Start the game loop
+            while self._end == False:
 
-            # Ask the server if the other client is ready
+                # Ask the server if the other client is ready
+                if self.__check_client_alive():
 
-            # Check if the game is over
-            self.__check_win()
+                    # Check if the game is over
+                    self.__check_win()
 
-            # Check who's turn it is
-            self.__check_active_player()
+                    # Check who's turn it is
+                    self.__check_active_player()
 
-            # Draw the game
-            self._draw_grid()
+                    # Draw the game
+                    self._draw_grid()
 
-            # Event loop
-            self._event_handler()
+                    # Event loop
+                    self._event_handler()

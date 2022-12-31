@@ -10,8 +10,10 @@ class Network:
         try:
             self.socket.connect((self.host, self.port))
             print("client is connected to server")
-        except ConnectionRefusedError:
+            return True
+        except:
             print("client failed to connect to server")
+            return False
 
     def send_string(self, data):
         try:

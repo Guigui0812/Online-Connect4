@@ -1,13 +1,12 @@
-import threading
-import pickle
+import threading, pickle, sys
 
 class ClientThread(threading.Thread):
 
     number_of_clients = 0
 
-# objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
-# objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
-# session terminée quand la partie est finie et que les joueurs ne veulent pas rejouer
+    # objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
+    # objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
+    # session terminée quand la partie est finie et que les joueurs ne veulent pas rejouer
 
     def __init__(self, connection, game, session_identifier):
         threading.Thread.__init__(self)
@@ -52,7 +51,21 @@ class ClientThread(threading.Thread):
                     else:
                         self.send("no_win")
 
+                elif data == "close_client_network":
+                    self.game.player_left = True
+                    self.send("client_network_closed")
+                    
+                elif data == "check_client_alive":
+
+                    if self.game.player_left == False:
+                        self.send("client_ok")
+                    else:
+                        self.send("client_lost")
+                        self.connection.close()
+                        sys.exit()
+
             except:
+                
                 # update the grid
                 data = pickle.loads(data)
 
