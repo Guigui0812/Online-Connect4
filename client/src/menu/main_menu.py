@@ -4,6 +4,7 @@ import game
 
 class MainMenu:
 
+    # Constructor
     def __init__(self, screen, width, height):
         self.title = "Puissance 4"
         start_button = menu.Button('Multijoueur local', (width / 2 - 150, height / 2), screen)
@@ -15,28 +16,37 @@ class MainMenu:
         self.height = height
         self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 40)
 
+    # Draw the menu
     def __draw_menu(self):
 
+        self.screen.fill('#C2C5CD')
+
+        # Draw the title
         text = self.font.render(self.title, True, (223, 59, 15))
         text_rect = text.get_rect(center=(self.width/2, self.height/2 - 100))
         self.screen.blit(text, text_rect)   
 
+        # Draw the buttons
         for button in self.buttons:
             button.draw(self.screen)
 
+        pygame.display.update()
+
+    # Run the menu
     def run_menu(self):
 
         pygame.display.set_caption('Puissance 4')
         
+        # Main loop
         while self.running:
-
-            mouse_position = pygame.mouse.get_pos()
-            self.screen.fill('#C2C5CD')
+                      
             self.__draw_menu()
-            pygame.display.update()
+            
+            # Event handling
+            mouse_position = pygame.mouse.get_pos()
 
             for event in pygame.event.get():
-                
+
                 if event.type == pygame.QUIT:
                     self.running = False
 

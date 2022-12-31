@@ -1,7 +1,6 @@
 import pygame
 import numpy as np
 import pickle
-
 import game
 
 ROW_COUNT = 6
