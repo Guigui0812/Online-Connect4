@@ -13,7 +13,7 @@ import game_server
 # - un serveur pour le chat
 # - un serveur pour le jeu
 
-host, port = 'localhost', 12345
+host, port = '0.0.0.0', 12345
 player_number = 1
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

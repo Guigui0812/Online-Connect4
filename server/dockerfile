@@ -1,1 +1,9 @@
-FROM python:latest
+FROM python:3
+
+RUN pip install numpy
+
+COPY ./src ./connect4_server
+
+EXPOSE 12345
+
+CMD [ "python", "./connect4_server/run_game_server.py" ] 
