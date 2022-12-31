@@ -85,3 +85,11 @@ class Grid:
                 if self.box_status_matrix[r][c] == player and self.box_status_matrix[r-1][c+1] == player and self.box_status_matrix[r-2][c+2] == player and self.box_status_matrix[r-3][c+3] == player:
                     return True
                     
+    # Draw a triangle on the top of the column that the mouse is over
+    def draw_triangle(self, screen, x):
+
+        for j in range(COLUMN_COUNT):
+
+            if self.visual_matrix[self.max_column_stacking[j]][j].rect.x < x < self.visual_matrix[self.max_column_stacking[j]][j].rect.x + self.visual_matrix[self.max_column_stacking[j]][j].rect.width :
+                triangle_points = [(self.visual_matrix[self.max_column_stacking[j]][j].rect.x + (self.visual_matrix[self.max_column_stacking[j]][j].rect.width/2), 100), (self.visual_matrix[self.max_column_stacking[j]][j].rect.x + 20, 80), ((self.visual_matrix[self.max_column_stacking[j]][j].rect.x + self.visual_matrix[self.max_column_stacking[j]][j].rect.width) - 20, 80)]
+                pygame.draw.polygon(screen, "#FFDC18", triangle_points)

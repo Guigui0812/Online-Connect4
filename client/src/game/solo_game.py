@@ -26,6 +26,8 @@ class SoloGame(game.Game):
             else:
                 self._screen.fill('#58A4FF')
 
+            mouse_x, mouse_y = pygame.mouse.get_pos()   
+            self._grid.draw_triangle(self._screen, mouse_x)
             self._grid.draw(self._screen)
             pygame.display.update()
 
@@ -36,8 +38,7 @@ class SoloGame(game.Game):
                     pygame.quit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:   
-                    mouse_x, mouse_y = pygame.mouse.get_pos()            
-                    
+                             
                     if self._grid.set_box(mouse_x, mouse_y, self._player_number) == True:
 
                         self.__check_win()
