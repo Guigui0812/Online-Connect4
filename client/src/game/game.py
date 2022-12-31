@@ -1,4 +1,3 @@
-import pygame as pg
 import game
 
 # Représente une partie

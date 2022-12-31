@@ -1,17 +1,17 @@
-import pygame as pg 
+import pygame
 import menu
 
-pg.init()
+pygame.init()
 
 WIDTH = 600
 HEIGHT = 600
 
-screen = pg.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-icon = pg.transform.scale(pg.image.load("../assets/icon.png"), (32, 32))
-pg.display.set_icon(icon)
+icon = pygame.transform.scale(pygame.image.load("../assets/icon.png"), (32, 32))
+pygame.display.set_icon(icon)
 
 menu = menu.MainMenu(screen, WIDTH, HEIGHT)
 menu.run_menu()
 
-pg.quit()
+pygame.quit()

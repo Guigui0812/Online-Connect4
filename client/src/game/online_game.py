@@ -1,4 +1,4 @@
-import pygame as pg
+import pygame
 import game
 import pickle
 import menu
@@ -12,9 +12,9 @@ class OnlineGame(game.Game):
         self.active_player = 1
         
     def __event_handler(self):
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                pg.quit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
     
     # game loop
     def start_game(self):
@@ -38,9 +38,9 @@ class OnlineGame(game.Game):
             self._client_network.send_string("client_ready")
             data = self._client_network.receive_string()
 
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    pg.quit()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
         
         waiting_screen.stop()
 
@@ -83,21 +83,21 @@ class OnlineGame(game.Game):
                 self._screen.fill('#58A4FF')
 
             self._grid.draw(self._screen)
-            pg.display.update()
+            pygame.display.update()
 
             # Event loop
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
 
                     # Close the connection (finir)
                     #self._client_network.send_string("close_client_network")
-                    pg.quit()
+                    pygame.quit()
 
                 if self.active_player == self._player_number:
 
-                    if event.type == pg.MOUSEBUTTONDOWN:  
+                    if event.type == pygame.MOUSEBUTTONDOWN:  
 
-                        mouseX, mouseY = pg.mouse.get_pos()
+                        mouseX, mouseY = pygame.mouse.get_pos()
 
                         if self._grid.set_box(mouseX, mouseY, self._player_number) == True: 
                                                     

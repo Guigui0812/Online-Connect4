@@ -1,4 +1,4 @@
-import pygame as pg
+import pygame
 import game
 
 class SoloGame(game.Game):
@@ -16,7 +16,7 @@ class SoloGame(game.Game):
     # game loop de la partie
     def start_game(self):
 
-        pg.display.set_caption('Partie en cours')
+        pygame.display.set_caption('Partie en cours')
 
         while self._end == False:
 
@@ -27,16 +27,16 @@ class SoloGame(game.Game):
                 self._screen.fill('#58A4FF')
 
             self._grid.draw(self._screen)
-            pg.display.update()
+            pygame.display.update()
 
             # Event loop
-            for event in pg.event.get():
+            for event in pygame.event.get():
 
-                if event.type == pg.QUIT:
-                    pg.quit()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
 
-                if event.type == pg.MOUSEBUTTONDOWN:   
-                    mouse_x, mouse_y = pg.mouse.get_pos()            
+                if event.type == pygame.MOUSEBUTTONDOWN:   
+                    mouse_x, mouse_y = pygame.mouse.get_pos()            
                     
                     if self._grid.set_box(mouse_x, mouse_y, self._player_number) == True:
 
