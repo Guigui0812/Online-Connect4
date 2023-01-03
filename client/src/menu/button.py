@@ -15,7 +15,7 @@ class Button:
         pygame.draw.rect(screen, (61, 120, 255), self.rect, border_radius = 30) 
 
         # Write text and center it
-        text = self.font.render(self.string, True, '#C2C5CD')
+        text = self.font.render(self.string, True, '#F3F4FA')
         text_rect = text.get_rect(center = self.rect.center)
         screen.blit(text, text_rect)
 

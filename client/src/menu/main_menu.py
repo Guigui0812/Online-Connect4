@@ -19,7 +19,7 @@ class MainMenu:
     # Draw the menu
     def __draw_menu(self):
 
-        self.screen.fill('#C2C5CD')
+        self.screen.fill('#F3F4FA')
 
         # Draw the title
         text = self.font.render(self.title, True, (223, 59, 15))

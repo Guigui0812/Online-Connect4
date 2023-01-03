@@ -18,17 +18,23 @@ class SoloGame(game.Game):
 
         pygame.display.set_caption('Partie en cours')
 
+        #text_input = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((10, 10), (50, 50)), manager=self.gui_manager)
+
         while self._end == False:
 
-            # Fill the _screen with the background color depending on the self.self._player_number
-            if self._player_number == 1:
-                self._screen.fill('#FA6565')
-            else:
-                self._screen.fill('#58A4FF')
+            # Fill the _screen with the background color
+            self.layers[0].fill('#F3F4FA')
 
             mouse_x, mouse_y = pygame.mouse.get_pos()   
-            self._grid.draw_triangle(self._screen, mouse_x)
-            self._grid.draw(self._screen)
+            self._grid.draw_triangle(self.layers[0], mouse_x)
+            self._grid.draw(self._screen, self.layers)
+
+            self._screen.blit(self.layers[0], (0, 0))
+            self._screen.blit(self.layers[1], (0, 0))
+            
+            #self.gui_manager.update(60/1000)
+            #self.gui_manager.draw_ui(self._screen)
+
             pygame.display.update()
 
             # Event loop
@@ -37,9 +43,11 @@ class SoloGame(game.Game):
                 if event.type == pygame.QUIT:
                     pygame.quit()
 
+                #self.gui_manager.process_events(event)
+
                 if event.type == pygame.MOUSEBUTTONDOWN:   
                              
-                    if self._grid.set_box(mouse_x, mouse_y, self._player_number) == True:
+                    if self._grid.set_box(mouse_x, self._player_number, self._screen, self.layers[0]) == True:
 
                         self.__check_win()
 
