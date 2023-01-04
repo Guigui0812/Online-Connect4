@@ -29,7 +29,7 @@ class WaitingScreen(threading.Thread):
 
         while self._running:
 
-            self._screen.fill('#C2C5CD')
+            self._screen.fill('#F3F4FA')
 
             text = self.font.render(self._text, True, (223, 59, 15))
             text_rect = text.get_rect(center=(self.width/2, self.height/2))
