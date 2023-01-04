@@ -115,4 +115,4 @@ class Box:
     def animate(self):
 
         if self.y < self.rect.y:
-            self.y += 1
+            self.y += 5

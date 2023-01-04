@@ -9,10 +9,6 @@ import game_server
 # - faire un système de statistiques pour les joueurs (pour afficher les statistiques des joueurs)
 # - faire un système de sauvegarde pour les joueurs (pour sauvegarder les parties des joueurs)
 
-# En réalité faudra deux serveurs : 
-# - un serveur pour le chat
-# - un serveur pour le jeu
-
 host, port = '0.0.0.0', 12345
 player_number = 1
 

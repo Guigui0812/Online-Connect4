@@ -1,7 +1,6 @@
 import socket
 
-
-class Network:
+class Connection:
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host, self.port = "localhost", 12345

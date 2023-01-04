@@ -41,8 +41,6 @@ class SoloGame(game.Game):
 
         while self._end == False:
 
-            
-
             # Get the mouse position
             mouse_x, mouse_y = pygame.mouse.get_pos()
 
