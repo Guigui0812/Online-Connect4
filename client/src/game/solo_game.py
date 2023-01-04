@@ -1,57 +1,55 @@
 import pygame
 import game
 
+# Class that handles the solo game
 class SoloGame(game.Game):
-
     def __init__(self, _screen, width, height):
-        game.Game.__init__(self, _screen,  width, height)
+        game.Game.__init__(self, _screen, width, height)
 
-    def __check_win(self):
+    def _check_win(self):
 
         if self._grid.check_win(self._player_number) == True:
             self._end = True
-
             # Display the winner _screen
-        
+
+    # Change the player
+    def _change_player(self):
+
+        if self._player_number == 1:
+            self._player_number = 2
+        else:
+            self._player_number = 1
+
+    # Event handler
+    def _event_loop(self, mouse_x):
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self._grid.set_box(mouse_x, self._player_number, self._screen, self.layers[0]) == True:
+                    self.__check_win()
+                    self._change_player()
+
     # game loop de la partie
+
     def start_game(self):
 
-        pygame.display.set_caption('Partie en cours')
-
-        #text_input = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((10, 10), (50, 50)), manager=self.gui_manager)
+        pygame.display.set_caption("Partie en cours")
 
         while self._end == False:
 
-            # Fill the _screen with the background color
-            self.layers[0].fill('#F3F4FA')
-
-            mouse_x, mouse_y = pygame.mouse.get_pos()   
-            self._grid.draw_triangle(self.layers[0], mouse_x)
-            self._grid.draw(self._screen, self.layers)
-
-            self._screen.blit(self.layers[0], (0, 0))
-            self._screen.blit(self.layers[1], (0, 0))
             
-            #self.gui_manager.update(60/1000)
-            #self.gui_manager.draw_ui(self._screen)
 
+            # Get the mouse position
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+
+            # Update the _screen
+            self._draw(mouse_x)
+            self._render()
             pygame.display.update()
 
-            # Event loop
-            for event in pygame.event.get():
-
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-
-                #self.gui_manager.process_events(event)
-
-                if event.type == pygame.MOUSEBUTTONDOWN:   
-                             
-                    if self._grid.set_box(mouse_x, self._player_number, self._screen, self.layers[0]) == True:
-
-                        self.__check_win()
-
-                        if self._player_number == 1:
-                            self._player_number = 2
-                        else:
-                            self._player_number = 1
+            # Event handler
+            self._event_loop(mouse_x)

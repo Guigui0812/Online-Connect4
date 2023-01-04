@@ -1,10 +1,10 @@
 import socket
 
-class Network:
 
+class Network:
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host, self.port = 'localhost', 12345
+        self.host, self.port = "localhost", 12345
 
     def connect(self):
         try:

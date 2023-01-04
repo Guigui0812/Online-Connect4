@@ -3,6 +3,7 @@ import game
 import pickle
 import menu
 
+
 class OnlineGame(game.Game):
 
     # Constructor
@@ -28,15 +29,14 @@ class OnlineGame(game.Game):
 
                     if self._grid.set_box(mouseX, mouseY, self._player_number) == True:
 
-                        self._client_network.send_data(
-                            self._grid.get_serialized_matrix())
+                        self._client_network.send_data(self._grid.get_serialized_matrix())
                         data = self._client_network.receive_string()
 
                         self._client_network.send_string("check_win")
                         data = self._client_network.receive_string()
 
     # Handle disconnection
-    def __disconnect(self):   
+    def __disconnect(self):
 
         self._client_network.send_string("close_client_network")
         data = self._client_network.receive_string()
@@ -53,12 +53,12 @@ class OnlineGame(game.Game):
 
         if data == "client_lost":
             self._end = True
-            self._client_network.close()    
+            self._client_network.close()
             print("Other player disconnected")
             return False
-            
+
         return True
-            
+
     # Check if the game is over
     def __check_win(self):
 
@@ -81,10 +81,8 @@ class OnlineGame(game.Game):
         self._client_network.send_string("get_grid")
         serialized_server_grid = self._client_network.receive_data()
         lastGrid = pickle.loads(serialized_server_grid)
-        self._grid.box_status_matrix = pickle.loads(
-            lastGrid["box_status_matrix"])
-        self._grid.max_column_stacking = pickle.loads(
-            lastGrid["max_column_stacking"])
+        self._grid.box_status_matrix = pickle.loads(lastGrid["box_status_matrix"])
+        self._grid.max_column_stacking = pickle.loads(lastGrid["max_column_stacking"])
 
     # Ask the server for who's turn it is
     def __check_active_player(self):
@@ -101,9 +99,9 @@ class OnlineGame(game.Game):
 
         # Fill the screen with the color depending on the player
         if self.active_player == 1:
-            self._screen.fill('#FA6565')
+            self._screen.fill("#FA6565")
         else:
-            self._screen.fill('#58A4FF')
+            self._screen.fill("#58A4FF")
 
         self._grid.draw(self._screen)
         pygame.display.update()
@@ -113,8 +111,7 @@ class OnlineGame(game.Game):
 
         print("waiting for server to be ready")
 
-        waiting_screen = menu.WaitingScreen(
-            self._screen, self.width, self.height)
+        waiting_screen = menu.WaitingScreen(self._screen, self.width, self.height)
         waiting_screen.start()
 
         server_ready = False
@@ -148,7 +145,7 @@ class OnlineGame(game.Game):
 
             # Get the player number from the server
             self.__get_player_number()
-            
+
             # Wait for the server to be ready
             self.__wait_for_server()
 
