@@ -19,7 +19,6 @@ class Game:
             return False
 
     def check_win(self):
-
         if self.grid.check_win(self.active_player) == True:
             self.end = True
             return True
