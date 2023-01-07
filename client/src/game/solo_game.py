@@ -51,3 +51,6 @@ class SoloGame(game.Game):
 
             # Event handler
             self._event_loop(mouse_x)
+
+            # Set the FPS
+            self.clock.tick(60)

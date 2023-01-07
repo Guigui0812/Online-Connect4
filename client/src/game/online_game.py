@@ -61,7 +61,7 @@ class OnlineGame(game.Game):
         return True
 
     # Check if the game is over
-    def __check_win(self):
+    def _check_win(self):
 
         self._connection.send_string("check_win")
         data = self._connection.receive_string()
@@ -128,14 +128,12 @@ class OnlineGame(game.Game):
 
     def _display(self):
     
-        clock = pygame.time.Clock()
-
         while self._end == False:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             self._draw(mouse_x)
             self._render()
             pygame.display.update()
-            clock.tick(60)
+            self.clock.tick(60)
 
     # Game loop
     def start_game(self):
@@ -159,7 +157,7 @@ class OnlineGame(game.Game):
                 if self.__check_client_alive():
 
                     # Check if the game is over
-                    self.__check_win()
+                    self._check_win()
 
                     # Check who's turn it is
                     self.__check__active_player()

@@ -8,6 +8,9 @@ import game_server
 # - faire un système de statistiques pour les joueurs (pour afficher les statistiques des joueurs)
 # - faire un système de sauvegarde pour les joueurs (pour sauvegarder les parties des joueurs)
 
+# build le server : docker build -t connect4_server:v1 .
+# run le server : docker run -dp 12345:12345 --name Connect4Server connect4_server:v1
+
 host, port = '0.0.0.0', 12345
 player_number = 1
 
