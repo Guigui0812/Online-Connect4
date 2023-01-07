@@ -59,7 +59,8 @@ class ClientThread(threading.Thread):
                 self.send("client_ok")
             else:
                 self.send("client_lost")
-                #self.connection.close()
+                self.connection.close()
+                sys.exit()
 
     def __handle_dictionary_format_request(self, data):
 

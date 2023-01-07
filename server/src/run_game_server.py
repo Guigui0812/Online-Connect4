@@ -38,5 +38,4 @@ while True:
     if player_number > 2:
         player_number = 1
 
-#connection.close()
 #server_socket.close()
