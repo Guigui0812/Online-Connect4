@@ -61,6 +61,11 @@ class ClientThread(threading.Thread):
                 self.send("client_lost")
                 self.connection.close()
                 sys.exit()
+                
+        elif data == "game_end":
+            self.send("game_closed")
+            self.connection.close()
+            sys.exit()
 
     def __handle_dictionary_format_request(self, data):
 

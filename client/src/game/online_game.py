@@ -10,6 +10,7 @@ class OnlineGame(game.Game):
         game.Game.__init__(self, screen, width, height)
         self._connection = game.Connection()
         self._player_number = 1
+        self.display_thread = threading.Thread(target=self._display)
 
     # Event of setting a coin in the grid
     def _set_coin_event(self, mouse_x):
@@ -17,10 +18,10 @@ class OnlineGame(game.Game):
         if self._grid.set_box(mouse_x, self._player_number, self._screen, self.layers[0]) == True:
 
             self._connection.send_data(self._grid.get_serialized_matrix())
-            data = self._connection.receive_string()
+            self._connection.receive_string()
 
             self._connection.send_string("check_win")
-            data = self._connection.receive_string()
+            self._connection.receive_string()
 
     # Event handler
     def _event_handler(self):
@@ -30,7 +31,7 @@ class OnlineGame(game.Game):
                 self.game_song.stop()
                 self.__disconnect()
                 pygame.quit()
-                
+
             if self._active_player == self._player_number:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouseX, mouseY = pygame.mouse.get_pos()
@@ -45,6 +46,7 @@ class OnlineGame(game.Game):
         if data == "client_network_closed":
             self._connection.close()
             self._end = True
+            self.display_thread.join()
             print("Disconnected")
 
     # Check if the other player is still connected
@@ -66,21 +68,15 @@ class OnlineGame(game.Game):
 
         self._connection.send_string("check_win")
         data = self._connection.receive_string()
+
         if data != "no_win":
-            if data == ("Player " + str(self._player_number) + " win"):
-                self._end = True
-                print("You win")
-                self.game_song.stop()
-                self._connection.close()
-                end_screen = game.EndScreen(self._screen, self.width, self.height, self._player_number)
-                end_screen.display()
-            else:
-                self._end = True
-                print("You loose")
-                self.game_song.stop()
-                self._connection.close()
-                end_screen = game.EndScreen(self._screen, self.width, self.height, self._player_number)
-                end_screen.display()
+
+            self._end = True
+            self.game_song.stop()
+            self.display_thread.join()
+            end_screen = game.EndScreen(
+                self._screen, self.width, self.height, self._player_number)
+            end_screen.display()
 
     # Update the grid
     def __update_grid(self):
@@ -89,8 +85,10 @@ class OnlineGame(game.Game):
         self._connection.send_string("get_grid")
         serialized_server_grid = self._connection.receive_data()
         lastGrid = pickle.loads(serialized_server_grid)
-        self._grid.box_status_matrix = pickle.loads(lastGrid["box_status_matrix"])
-        self._grid.max_column_stacking = pickle.loads(lastGrid["max_column_stacking"])
+        self._grid.box_status_matrix = pickle.loads(
+            lastGrid["box_status_matrix"])
+        self._grid.max_column_stacking = pickle.loads(
+            lastGrid["max_column_stacking"])
 
     # Ask the server for who's turn it is
     def __check__active_player(self):
@@ -107,7 +105,8 @@ class OnlineGame(game.Game):
 
         print("waiting for server to be ready")
 
-        waiting_screen = game.WaitingScreen(self._screen, self.width, self.height)
+        waiting_screen = game.WaitingScreen(
+            self._screen, self.width, self.height)
         waiting_screen.start()
 
         server_ready = False
@@ -134,13 +133,23 @@ class OnlineGame(game.Game):
         print("player number: ", self._player_number)
 
     def _display(self):
-    
+
         while self._end == False:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             self._draw(mouse_x)
             self._render()
             pygame.display.update()
             self.clock.tick(60)
+
+    def _end_game_connection(self):
+        try:
+            # Disconnect from the server
+            self.__disconnect()
+        except:
+            # Check if the other client is still connected before disconnecting
+            self._connection.send_string("check_client_alive")
+            self._connection.receive_string()
+            self._connection.close()
 
     # Game loop
     def start_game(self):
@@ -159,8 +168,7 @@ class OnlineGame(game.Game):
             self.__wait_for_server()
 
             # Start the display thread
-            display_thread = threading.Thread(target=self._display)
-            display_thread.start()
+            self.display_thread.start()
 
             # Start the game loop
             while self._end == False:
@@ -176,3 +184,5 @@ class OnlineGame(game.Game):
 
                     # Event loop
                     self._event_handler()
+            
+            self._end_game_connection()
