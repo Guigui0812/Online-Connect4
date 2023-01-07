@@ -1,7 +1,6 @@
 import pygame
 import game
 import pickle
-import menu
 import threading
 
 # Handle the online game mode
@@ -47,6 +46,7 @@ class OnlineGame(game.Game):
             self._end = True
             print("Disconnected")
 
+    # Check if the other player is still connected
     def __check_client_alive(self):
 
         self._connection.send_string("check_client_alive")
@@ -69,11 +69,13 @@ class OnlineGame(game.Game):
             if data == ("Player " + str(self._player_number) + " win"):
                 self._end = True
                 print("You win")
-                # Display the winner _screen
+                end_screen = game.EndScreen(self._screen, self.width, self.height, self._player_number)
+                end_screen.display()
             else:
                 self._end = True
                 print("You loose")
-                # Display the loser _screen
+                end_screen = game.EndScreen(self._screen, self.width, self.height, self._player_number)
+                end_screen.display()
 
     # Update the grid
     def __update_grid(self):
@@ -100,7 +102,7 @@ class OnlineGame(game.Game):
 
         print("waiting for server to be ready")
 
-        waiting_screen = menu.WaitingScreen(self._screen, self.width, self.height)
+        waiting_screen = game.WaitingScreen(self._screen, self.width, self.height)
         waiting_screen.start()
 
         server_ready = False
@@ -147,8 +149,9 @@ class OnlineGame(game.Game):
             # Wait for the server to be ready
             self.__wait_for_server()
 
-            x = threading.Thread(target=self._display)
-            x.start()
+            # Start the display thread
+            display_thread = threading.Thread(target=self._display)
+            display_thread.start()
 
             # Start the game loop
             while self._end == False:
@@ -161,13 +164,6 @@ class OnlineGame(game.Game):
 
                     # Check who's turn it is
                     self.__check__active_player()
-
-                    # Get the mouse position
-                    #mouse_x, mouse_y = pygame.mouse.get_pos()
-                    # Update the _screen
-                    #self._draw(mouse_x)
-                    #self._render()
-                    #pygame.display.update()
 
                     # Event loop
                     self._event_handler()

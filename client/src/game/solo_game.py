@@ -10,7 +10,8 @@ class SoloGame(game.Game):
 
         if self._grid.check_win(self._active_player) == True:
             self._end = True
-            # Display the winner _screen
+            end_screen = game.EndScreen(self._screen, self.width, self.height, self._active_player)
+            end_screen.display()
 
     # Change the player
     def _change_player(self):

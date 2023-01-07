@@ -53,3 +53,16 @@ class Game:
         text = self.font.render(title, True, color)
         text_rect = text.get_rect(center=(self.width/2, 40))
         self._screen.blit(text, text_rect)  
+
+    def _end_game(self):
+        
+        if self._active_player == 1:
+            color = (254, 91, 47)
+            title = "Le joueur 1 a gagné !"
+        else:
+            color = (61, 120, 255)
+            title = "Le joueur 2 a gagné !"
+
+        text = self.font.render(title, True, color)
+        text_rect = text.get_rect(center=(self.width/2, self.height/2))
+        self._screen.blit(text, text_rect)
