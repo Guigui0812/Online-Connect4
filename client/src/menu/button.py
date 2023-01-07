@@ -9,15 +9,15 @@ class Button:
         self.screen = screen
         self.rect = pygame.rect.Rect((self.position[0], self.position[1]), (300, 60))
 
-    def draw(self, screen):
+    def draw(self):
 
         # Draw the button rect
-        pygame.draw.rect(screen, (61, 120, 255), self.rect, border_radius = 30) 
+        pygame.draw.rect(self.screen, (61, 120, 255), self.rect, border_radius = 30) 
 
         # Write text and center it
         text = self.font.render(self.string, True, '#F3F4FA')
         text_rect = text.get_rect(center = self.rect.center)
-        screen.blit(text, text_rect)
+        self.screen.blit(text, text_rect)
 
     def check_clicked(self):
         if self.rect.collidepoint(pygame.mouse.get_position()) and pygame.mouse.get_pressed()[0]:
