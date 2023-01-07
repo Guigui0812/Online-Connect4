@@ -10,7 +10,7 @@ class OnlineGame(game.Game):
     def __init__(self, screen, width, height):
         game.Game.__init__(self, screen, width, height)
         self._connection = game.Connection()
-        self._active_player = 1
+        self._player_number = 1
 
     # Event of setting a coin in the grid
     def _set_coin_event(self, mouse_x):

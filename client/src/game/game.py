@@ -7,12 +7,13 @@ class Game:
     def __init__(self, screen, width, height):
         self._end = False
         self._screen = screen
-        self._player_number = 1
+        self._active_player = 1
         self._grid = game.Grid()
         self.width = width
         self.height = height
         self.layers = [pygame.surface.Surface((self.width, self.height), pygame.SRCALPHA) for i in range(2)]
         self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 40)
 
     # Abstract methods that must be implemented in the child classes
     def _check_win(self):
@@ -30,9 +31,25 @@ class Game:
 
     # Render the game board
     def _render(self):
+
         self._screen.blit(self.layers[0], (0, 0))
         self._screen.blit(self.layers[1], (0, 0))
+        self.__display_player()
 
     # Abstract methods that must be implemented in the child classes
     def _event_loop(self):
         pass
+
+    # Display the player who is playing
+    def __display_player(self):
+        
+        if self._active_player == 1:
+            color = (254, 91, 47)
+            title = "Tour du joueur 1"
+        else:
+            color = (61, 120, 255)
+            title = "Tour du joueur 2"
+
+        text = self.font.render(title, True, color)
+        text_rect = text.get_rect(center=(self.width/2, 40))
+        self._screen.blit(text, text_rect)  

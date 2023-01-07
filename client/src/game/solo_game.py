@@ -8,17 +8,17 @@ class SoloGame(game.Game):
 
     def _check_win(self):
 
-        if self._grid.check_win(self._player_number) == True:
+        if self._grid.check_win(self._active_player) == True:
             self._end = True
             # Display the winner _screen
 
     # Change the player
     def _change_player(self):
 
-        if self._player_number == 1:
-            self._player_number = 2
+        if self._active_player == 1:
+            self._active_player = 2
         else:
-            self._player_number = 1
+            self._active_player = 1
 
     # Event handler
     def _event_loop(self, mouse_x):
@@ -29,7 +29,7 @@ class SoloGame(game.Game):
                 pygame.quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self._grid.set_box(mouse_x, self._player_number, self._screen, self.layers[0]) == True:
+                if self._grid.set_box(mouse_x, self._active_player, self._screen, self.layers[0]) == True:
                     self._check_win()
                     self._change_player()
 
