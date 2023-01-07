@@ -28,8 +28,8 @@ class OnlineGame(game.Game):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.__disconnect()
-                pygame.quit()
-
+                #pygame.quit()
+                
             if self._active_player == self._player_number:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouseX, mouseY = pygame.mouse.get_pos()
@@ -141,6 +141,8 @@ class OnlineGame(game.Game):
     def start_game(self):
 
         pygame.display.set_caption("Puissance 4 - Online Game")
+
+        self.game_song.play(-1)
 
         # Connect to the server
         if self._connection.connect():

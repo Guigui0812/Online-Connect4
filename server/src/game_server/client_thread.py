@@ -59,8 +59,7 @@ class ClientThread(threading.Thread):
                 self.send("client_ok")
             else:
                 self.send("client_lost")
-                self.connection.close()
-                sys.exit()
+                #self.connection.close()
 
     def __handle_dictionary_format_request(self, data):
 
@@ -69,6 +68,7 @@ class ClientThread(threading.Thread):
         self.game.grid.max_column_stacking = pickle.loads(data["max_column_stacking"])
 
         if self.game.check_win() == False:
+
             # change the active player
             if self.game.active_player == 1:
                 self.game.active_player = 2
@@ -87,7 +87,7 @@ class ClientThread(threading.Thread):
 
             except:
 
-                # update the grid
+                # deserialize the data
                 data = pickle.loads(data)
 
                 # if is a dictionary process it

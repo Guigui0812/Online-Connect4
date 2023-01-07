@@ -2,6 +2,7 @@ import pygame
 import menu
 import game
 
+# Class that handles the main menu
 class MainMenu:
 
     # Constructor
@@ -82,5 +83,3 @@ class MainMenu:
             # Event handling
             mouse_position = pygame.mouse.get_pos()
             self.__event_handler(mouse_position)
-
-            
