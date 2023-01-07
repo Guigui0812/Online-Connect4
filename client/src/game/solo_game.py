@@ -30,7 +30,7 @@ class SoloGame(game.Game):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self._grid.set_box(mouse_x, self._player_number, self._screen, self.layers[0]) == True:
-                    self.__check_win()
+                    self._check_win()
                     self._change_player()
 
     # game loop de la partie
