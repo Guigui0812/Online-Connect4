@@ -27,8 +27,9 @@ class OnlineGame(game.Game):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.game_song.stop()
                 self.__disconnect()
-                #pygame.quit()
+                pygame.quit()
                 
             if self._active_player == self._player_number:
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -38,7 +39,7 @@ class OnlineGame(game.Game):
     # Handle disconnection
     def __disconnect(self):
 
-        self._connection.send_string("close_connection")
+        self._connection.send_string("close_client_network")
         data = self._connection.receive_string()
 
         if data == "client_network_closed":
@@ -69,11 +70,15 @@ class OnlineGame(game.Game):
             if data == ("Player " + str(self._player_number) + " win"):
                 self._end = True
                 print("You win")
+                self.game_song.stop()
+                self._connection.close()
                 end_screen = game.EndScreen(self._screen, self.width, self.height, self._player_number)
                 end_screen.display()
             else:
                 self._end = True
                 print("You loose")
+                self.game_song.stop()
+                self._connection.close()
                 end_screen = game.EndScreen(self._screen, self.width, self.height, self._player_number)
                 end_screen.display()
 
