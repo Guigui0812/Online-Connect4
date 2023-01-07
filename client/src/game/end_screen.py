@@ -1,4 +1,3 @@
-import game
 import pygame
 
 class EndScreen():
@@ -12,6 +11,7 @@ class EndScreen():
         self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 30)
         self.font_light = pygame.font.Font('../assets/Sugar Snow.ttf', 16)
         self.title_color = 0
+        self.end_song = pygame.mixer.Sound('../assets/sounds/end_game_song.wav')
 
         if winner == 1:
             self.title_color = (223, 59, 15)
@@ -21,6 +21,8 @@ class EndScreen():
             self._text = "Le joueur 2 est le vainqueur !"
 
     def display(self):
+
+        self.end_song.play(-1)
 
         while self._running == True:
             
@@ -48,4 +50,5 @@ class EndScreen():
                 # if space is pressed, go back to the menu
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
+                        self.end_song.stop()
                         self._running = False

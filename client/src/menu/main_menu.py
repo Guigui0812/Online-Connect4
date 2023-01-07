@@ -15,6 +15,7 @@ class MainMenu:
         self.width = width
         self.height = height
         self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 40)
+        self.menu_song = pygame.mixer.Sound('../assets/sounds/main_menu_song.wav')
 
     # Draw the menu
     def __draw_menu(self):
@@ -35,11 +36,18 @@ class MainMenu:
     # Run the menu
     def run_menu(self):
 
-        pygame.display.set_caption('Puissance 4')
+        pygame.display.set_caption('Puissance 4 - Menu')
         
+        # Player a song in the background of the menu 
+        self.menu_song.play(-1)
+
         # Main loop
         while self.running:
                       
+            # if the song is stopped, play it again
+            if not pygame.mixer.get_busy():
+                self.menu_song.play(-1)
+
             self.__draw_menu()
             
             # Event handling
@@ -52,9 +60,11 @@ class MainMenu:
 
                 if(event.type == pygame.MOUSEBUTTONDOWN):
                     if(self.buttons[0].rect.collidepoint(mouse_position)):
+                        self.menu_song.stop()
                         new_game = game.SoloGame(self.screen, self.width, self.height)
                         new_game.start_game()
 
                     if(self.buttons[1].rect.collidepoint(mouse_position)):
+                        self.menu_song.stop()
                         new_game = game.OnlineGame(self.screen, self.width, self.height)
                         new_game.start_game()

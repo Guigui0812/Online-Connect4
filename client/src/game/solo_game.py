@@ -10,6 +10,7 @@ class SoloGame(game.Game):
 
         if self._grid.check_win(self._active_player) == True:
             self._end = True
+            self.game_song.stop()
             end_screen = game.EndScreen(self._screen, self.width, self.height, self._active_player)
             end_screen.display()
 
@@ -31,6 +32,8 @@ class SoloGame(game.Game):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self._grid.set_box(mouse_x, self._active_player, self._screen, self.layers[0]) == True:
+                    coin_song = pygame.mixer.Sound('../assets/sounds/coin_song.wav')
+                    coin_song.play()
                     self._check_win()
                     self._change_player()
 
@@ -38,7 +41,10 @@ class SoloGame(game.Game):
 
     def start_game(self):
 
-        pygame.display.set_caption("Partie en cours")
+        pygame.display.set_caption("Puissance 4 - Solo Game")
+
+        # Play a song in the background of the game infinite times
+        self.game_song.play(-1)
 
         while self._end == False:
 

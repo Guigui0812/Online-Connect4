@@ -140,6 +140,8 @@ class OnlineGame(game.Game):
     # Game loop
     def start_game(self):
 
+        pygame.display.set_caption("Puissance 4 - Online Game")
+
         # Connect to the server
         if self._connection.connect():
 

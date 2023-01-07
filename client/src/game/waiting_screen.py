@@ -18,6 +18,7 @@ class WaitingScreen(threading.Thread):
         self.height = height
         self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 30)
         self.clock = pygame.time.Clock()
+        self.waiting_song = pygame.mixer.Sound('../assets/sounds/waiting_song.wav')
 
     def run(self):
 
@@ -26,6 +27,8 @@ class WaitingScreen(threading.Thread):
         color = (61, 120, 255)
         counter = 0
         num_frames = 60
+
+        self.waiting_song.play(-1)
 
         while self._running:
 
@@ -54,3 +57,4 @@ class WaitingScreen(threading.Thread):
 
     def stop(self):
         self._running = False
+        self.waiting_song.stop()
