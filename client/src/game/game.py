@@ -13,7 +13,7 @@ class Game:
         self.height = height
         self.layers = [pygame.surface.Surface((self.width, self.height), pygame.SRCALPHA) for i in range(2)]
         self.clock = pygame.time.Clock()
-        self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 40)
+        self.font = pygame.font.Font('../assets/fonts/Sugar Snow.ttf', 40)
         self.game_song = pygame.mixer.Sound('../assets/sounds/game_song.wav')
 
     # Abstract methods that must be implemented in the child classes

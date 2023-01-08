@@ -156,8 +156,6 @@ class OnlineGame(game.Game):
 
         pygame.display.set_caption("Puissance 4 - Online Game")
 
-        self.game_song.play(-1)
-
         # Connect to the server
         if self._connection.connect():
 
@@ -166,6 +164,8 @@ class OnlineGame(game.Game):
 
             # Wait for the server to be ready
             self.__wait_for_server()
+
+            self.game_song.play(-1)
 
             # Start the display thread
             self.display_thread.start()

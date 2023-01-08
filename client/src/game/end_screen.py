@@ -8,8 +8,8 @@ class EndScreen():
         self._text = ""
         self.width = width
         self.height = height
-        self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 30)
-        self.font_light = pygame.font.Font('../assets/Sugar Snow.ttf', 16)
+        self.font = pygame.font.Font('../assets/fonts/Sugar Snow.ttf', 30)
+        self.font_light = pygame.font.Font('../assets/fonts/Sugar Snow.ttf', 16)
         self.title_color = 0
         self.end_song = pygame.mixer.Sound('../assets/sounds/end_game_song.wav')
 

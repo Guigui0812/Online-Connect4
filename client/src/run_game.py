@@ -8,7 +8,7 @@ HEIGHT = 600
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-icon = pygame.transform.scale(pygame.image.load("../assets/icon.png"), (32, 32))
+icon = pygame.transform.scale(pygame.image.load("../assets/images/icon.png"), (32, 32))
 pygame.display.set_icon(icon)
 
 menu = menu.MainMenu(screen, WIDTH, HEIGHT)

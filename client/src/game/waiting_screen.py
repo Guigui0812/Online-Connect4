@@ -16,7 +16,7 @@ class WaitingScreen(threading.Thread):
         self._text = "En attente d\'un joueur..."
         self.width = width
         self.height = height
-        self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 30)
+        self.font = pygame.font.Font('../assets/fonts/Sugar Snow.ttf', 30)
         self.clock = pygame.time.Clock()
         self.waiting_song = pygame.mixer.Sound('../assets/sounds/waiting_song.wav')
 

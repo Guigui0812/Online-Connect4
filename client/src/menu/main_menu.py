@@ -16,12 +16,13 @@ class MainMenu:
         self.buttons = [start_button, online_button]
         self.screen = screen
         self.running = True 
-        self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 40)
+        self.font = pygame.font.Font('../assets/fonts/Sugar Snow.ttf', 40)
         self.menu_song = pygame.mixer.Sound('../assets/sounds/main_menu_song.wav')
         
     # Draw the menu
     def __draw_menu(self):
 
+        # Fill the background
         self.screen.fill('#F3F4FA')
 
         # Draw the title
@@ -59,7 +60,7 @@ class MainMenu:
         pygame.display.set_caption('Puissance 4 - Menu')
 
         # Load the background image of the menu
-        background = pygame.transform.scale(pygame.image.load("../assets/menu_background.png"), (self.width, self.height))
+        background = pygame.transform.scale(pygame.image.load("../assets/images/menu_background.png"), (self.width, self.height))
         background.set_alpha(25)
 
         # Player a song in the background of the menu 

@@ -5,7 +5,7 @@ class Button:
     def __init__(self, txt, position, screen):
         self.string = txt
         self.position = position
-        self.font = pygame.font.Font('../assets/Sugar Snow.ttf', 25)
+        self.font = pygame.font.Font('../assets/fonts/Sugar Snow.ttf', 25)
         self.screen = screen
         self.rect = pygame.rect.Rect((self.position[0], self.position[1]), (300, 60))
 
