@@ -3,10 +3,10 @@ import game_server
 
 # Choses intéressantes à faire : 
 # - joindre une base de données pour stocker les données des joueurs (victoires, compte etc...)
-# - Docker-compose pour lancer le serveur et la base de données en même temps 
 # - faire un système de classement pour les joueurs (pour afficher les meilleurs joueurs)
 # - faire un système de statistiques pour les joueurs (pour afficher les statistiques des joueurs)
 # - faire un système de sauvegarde pour les joueurs (pour sauvegarder les parties des joueurs)
+# - Mettre en place le match nul
 
 # build le server : docker build -t connect4_server:v1 .
 # run le server : docker run -dp 12345:12345 --name Connect4Server connect4_server:v1

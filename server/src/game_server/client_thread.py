@@ -5,6 +5,7 @@ import sys
 
 class ClientThread(threading.Thread):
 
+    # Number of client currently connected
     number_of_clients = 0
 
     # objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
@@ -18,41 +19,52 @@ class ClientThread(threading.Thread):
         self.session_identifier = session_identifier
         self.game.number_of_players += 1
 
+    # Management of the strings request type
     def __handle_string_format_request(self, data):
 
         data = data.decode("utf8")
 
+        # Depending of the message, specfic actions are processed
+
+        # Send the client his player number
         if data == "get_player_nb":
             self.send(str(self.session_identifier))
 
+        # Send the state of the server (ready or not)
         elif data == "client_ready":
             if self.game.game_ready():
                 self.send("server_ready")
             else:
                 self.send("server_not_ready")
 
+        # send the grid to the client so that it can update his one
         elif data == "get_grid":
             # get the serialized grid object
             self.connection.sendall(self.game.grid.get_serialized_box_status_matrix())
 
-        # get the active player
+        # get the active player in the current game session
         elif data == "get_active_player":
             self.send(str(self.game.active_player))
 
+        # The server check if the current game is win
         elif data == "check_win":
 
+            # if the gme is ended, there's a winner
             if self.game.end == True:
                 if self.game.active_player == 1:
                     self.send("Player 1 win")
                 else:
                     self.send("Player 2 win")
+
             else:
                 self.send("no_win")
 
+        # Signal to handle the closing of the app by the client
         elif data == "close_client_network":
             self.game.player_left = True
             self.send("client_network_closed")
 
+        # Check if the client is alive, if it leaves the game, the server needs to close the connection
         elif data == "check_client_alive":
 
             if self.game.player_left == False:
@@ -61,18 +73,22 @@ class ClientThread(threading.Thread):
                 self.send("client_lost")
                 self.connection.close()
                 sys.exit()
-                
+        
+        # Instruction to handle the end of the game and finish it
         elif data == "game_end":
             self.send("game_closed")
             self.connection.close()
             sys.exit()
 
+    # Manages the "none-string" request (it's just dictionnaries in our case)
     def __handle_dictionary_format_request(self, data):
 
+        # When we receive a dictionnary, it's the updated grid of the client --> Deserialization
         self.send("grid_updated")
         self.game.grid.box_status_matrix = pickle.loads(data["box_status_matrix"])
         self.game.grid.max_column_stacking = pickle.loads(data["max_column_stacking"])
 
+        # Handle the player change
         if self.game.check_win() == False:
 
             # change the active player
@@ -81,10 +97,13 @@ class ClientThread(threading.Thread):
             else:
                 self.game.active_player = 1
 
+    # Run methods of the client thread
     def run(self):
 
+        # infinite loop
         while True:
 
+            # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)
 
             try:
@@ -100,6 +119,7 @@ class ClientThread(threading.Thread):
                 if type(data) == dict:
                     self.__handle_dictionary_format_request(data)
 
+    # Method to send "string" data to the client
     def send(self, data):
         data = data.encode("utf8")
         self.connection.sendall(data)
