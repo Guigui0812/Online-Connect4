@@ -1,0 +1,8 @@
+version: '3'
+services:
+  connect4_server:
+    image: connect4_server:v1
+    volumes:
+      - ./src:/connect4_server
+    ports:
+      - "12345:12345"

@@ -1,7 +1,7 @@
 import threading
 import pickle
 import sys
-
+import re
 
 class ClientThread(threading.Thread):
 
@@ -27,7 +27,15 @@ class ClientThread(threading.Thread):
         # Depending of the message, specfic actions are processed
 
         # Send the client his player number
-        if data == "get_player_nb":
+        if "set_player_nb_and_name" in data:
+            
+            if (self.session_identifier == 1):
+                player_name = re.split("\s", data)
+                self.game.player1_name = player_name[1]
+            else:
+                player_name = re.split("\s", data)
+                self.game.player2_name = player_name[1]
+
             self.send(str(self.session_identifier))
 
         # Send the state of the server (ready or not)
@@ -85,6 +93,7 @@ class ClientThread(threading.Thread):
 
         # When we receive a dictionnary, it's the updated grid of the client --> Deserialization
         self.send("grid_updated")
+        self.game.number_of_turns = self.game.number_of_turns+1
         self.game.grid.box_status_matrix = pickle.loads(data["box_status_matrix"])
         self.game.grid.max_column_stacking = pickle.loads(data["max_column_stacking"])
 
@@ -105,6 +114,8 @@ class ClientThread(threading.Thread):
 
             # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)
+            print(self.game.player1_name)
+            print(self.game.player2_name)
 
             try:
                 # if the data is a string

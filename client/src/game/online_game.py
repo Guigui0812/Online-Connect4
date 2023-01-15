@@ -11,6 +11,7 @@ class OnlineGame(game.Game):
         self._connection = game.Connection()
         self._player_number = 1
         self.display_thread = threading.Thread(target=self._display)
+        self._player_name = ""
 
     # Event of setting a coin in the grid
     def _set_coin_event(self, mouse_x):
@@ -19,7 +20,6 @@ class OnlineGame(game.Game):
 
             self._connection.send_data(self._grid.get_serialized_matrix())
             self._connection.receive_string()
-
             self._connection.send_string("check_win")
             self._connection.receive_string()
 
@@ -123,14 +123,11 @@ class OnlineGame(game.Game):
         waiting_screen.stop()
         print("server ready")
 
-    # Get the player number from the server
+    # Get the player number from the server and set the playername on it
     def __get_player_number(self):
-
-        # Get the player number from the server
-        self._connection.send_string("get_player_nb")
+        self._connection.send_string("set_player_nb_and_name oui")
         data = self._connection.receive_string()
         self._player_number = int(data)
-        print("player number: ", self._player_number)
 
     def _display(self):
 
