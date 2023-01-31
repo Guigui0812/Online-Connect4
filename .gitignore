@@ -164,4 +164,4 @@ cython_debug/
 
 # Ignore the data folder in server
 server/data/
-server/.data
+.data/
