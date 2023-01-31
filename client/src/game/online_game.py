@@ -6,12 +6,12 @@ import threading
 # Handle the online game mode
 class OnlineGame(game.Game):
 
-    def __init__(self, screen, width, height):
+    def __init__(self, screen, width, height, ip, port, player_name):
         game.Game.__init__(self, screen, width, height)
-        self._connection = game.Connection()
+        self._connection = game.Connection(ip, port)
         self._player_number = 1
         self.display_thread = threading.Thread(target=self._display)
-        self._player_name = ""
+        self._player_name = player_name
 
     # Event of setting a coin in the grid
     def _set_coin_event(self, mouse_x):

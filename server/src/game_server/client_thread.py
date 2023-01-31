@@ -8,6 +8,9 @@ class ClientThread(threading.Thread):
     # Number of client currently connected
     number_of_clients = 0
 
+    # List of all the clients
+    clients = []
+
     # objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
     # objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
     # session terminée quand la partie est finie et que les joueurs ne veulent pas rejouer

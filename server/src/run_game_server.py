@@ -1,5 +1,7 @@
 import socket
 import game_server
+import sys
+import signal
 
 # Choses intéressantes à faire : 
 # - joindre une base de données pour stocker les données des joueurs (victoires, compte etc...)
@@ -18,22 +20,45 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((host, port))
 print("server is listening on port", port)
 
+# Gracefully close the server
+def handle_signal(signum, frame):
+
+    print("Closing all client...")
+
+    # Kill all threads
+    for client in game_server.ClientThread.clients:
+        client.stop()
+    
+    print("Closing server socket...")
+
+    server_socket.close()
+
+    print("Exiting gracefully...")
+
+    sys.exit(0)
+
+# Handle signals to close the server properly
+signal.signal(signal.SIGINT, handle_signal)
+signal.signal(signal.SIGINT, handle_signal)
+signal.signal(signal.SIGTERM, handle_signal)
+
+# Main loop
 while True:
 
     server_socket.listen() # the server listen for connections
-    print("server is listening for connections")
 
     connection, address = server_socket.accept()
-    print("connection from", address)
 
     game_server.ClientThread.number_of_clients += 1
     
     if game_server.ClientThread.number_of_clients % 2 == 1:
         game_server.Game.number_of_games.append(game_server.Game())
 
-    client_thread = game_server.ClientThread(connection, game_server.Game.number_of_games[-1], player_number)
+    game_server.ClientThread.clients.append(game_server.ClientThread(connection, game_server.Game.number_of_games[-1], player_number))
     player_number += 1
-    client_thread.start()
+
+    # Start new thread 
+    game_server.ClientThread.clients[len(game_server.ClientThread.clients) - 1].start()
 
     if player_number > 2:
         player_number = 1

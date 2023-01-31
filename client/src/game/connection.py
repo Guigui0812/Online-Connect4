@@ -1,9 +1,9 @@
 import socket
 
 class Connection:
-    def __init__(self):
+    def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host, self.port = "localhost", 12345
+        self.host, self.port = host, int(port)
 
     def connect(self):
         try:
