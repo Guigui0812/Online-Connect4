@@ -50,7 +50,7 @@ class MainMenu:
 
                 if(self.buttons[1].rect.collidepoint(mouse_position)):
                     self.menu_song.stop()
-                    new_game = game.OnlineGame(self.screen, self.width, self.height)
+                    new_game = menu.(self.screen, self.width, self.height)
                     new_game.start_game()
 
     # Run the menu

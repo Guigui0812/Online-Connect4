@@ -17,6 +17,8 @@ class Button:
         # Write text and center it
         text = self.font.render(self.string, True, '#F3F4FA')
         text_rect = text.get_rect(center = self.rect.center)
+
+        # Draw the text
         self.screen.blit(text, text_rect)
 
     def check_clicked(self):

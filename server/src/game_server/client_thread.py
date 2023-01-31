@@ -61,6 +61,7 @@ class ClientThread(threading.Thread):
             if self.game.end == True:
                 if self.game.active_player == 1:
                     self.send("Player 1 win")
+                    
                 else:
                     self.send("Player 2 win")
             else:
