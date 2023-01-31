@@ -163,4 +163,4 @@ cython_debug/
 #.idea/
 
 # Ignore all the files in the .data folder, that is in ./server/.data
-server/.data/*
+.data/*
