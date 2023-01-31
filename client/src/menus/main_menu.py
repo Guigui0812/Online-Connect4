@@ -1,6 +1,7 @@
 import pygame
-import menu
+import interface_items
 import game
+import menus
 
 # Class that handles the main menu
 class MainMenu:
@@ -11,8 +12,8 @@ class MainMenu:
         self.height = height
         self.surface = pygame.surface.Surface((self.width, self.height), pygame.SRCALPHA)
         self.title = "Puissance 4"
-        start_button = menu.Button('Multijoueur local', (width / 2 - 150, height / 2), self.surface)
-        online_button = menu.Button('Multijoueur en ligne', (width / 2 - 150, height / 2 + 80), self.surface)
+        start_button = interface_items.Button('Multijoueur local', (width / 2 - 125, height / 2), self.surface)
+        online_button = interface_items.Button('Multijoueur en ligne', (width / 2 - 125, height / 2 + 80), self.surface)
         self.buttons = [start_button, online_button]
         self.screen = screen
         self.running = True 
@@ -50,8 +51,8 @@ class MainMenu:
 
                 if(self.buttons[1].rect.collidepoint(mouse_position)):
                     self.menu_song.stop()
-                    new_game = menu.(self.screen, self.width, self.height)
-                    new_game.start_game()
+                    new_game = menus.OnlineSettings(self.screen, self.width, self.height)
+                    new_game.run_online_settings()
 
     # Run the menu
     def run_menu(self):
