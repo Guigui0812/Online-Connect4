@@ -50,6 +50,12 @@ class TextBox():
 
                     # Add a space to the text
                     self.set_text(self.text + ' ')
+                
+                # If the key pressed is a period
+                if event.key == pygame.K_PERIOD or event.key == pygame.K_SEMICOLON:
+                        
+                        # Add a period to the text
+                        self.set_text(self.text + '.')
 
                 # If the key pressed is a backspace
                 if event.key == pygame.K_BACKSPACE:
@@ -67,12 +73,10 @@ class TextBox():
 
                     # Set the text box as clicked
                     self.clicked = True
-                    print(self.clicked)
 
                 else:
                     # Set the text box as not clicked
                     self.clicked = False
-                    print(self.clicked)
 
     # Check if the text box is focused
     def is_focused(self):

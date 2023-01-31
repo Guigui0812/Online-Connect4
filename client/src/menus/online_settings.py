@@ -32,7 +32,7 @@ class OnlineSettings():
 
         self.screen.fill('#F3F4FA')
 
-        text = self.font.render(self.title, True, (223, 59, 15))
+        text = self.font.render(self.title, True, (61, 120, 255))
         text_rect = text.get_rect(center=(self.width/2, self.height/2 - 200))
         self.screen.blit(text, text_rect)
 
