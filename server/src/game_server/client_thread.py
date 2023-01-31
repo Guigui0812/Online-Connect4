@@ -57,13 +57,12 @@ class ClientThread(threading.Thread):
         # The server check if the current game is win
         elif data == "check_win":
 
-            # if the gme is ended, there's a winner
+            # if the game is ended, there's a winner
             if self.game.end == True:
                 if self.game.active_player == 1:
                     self.send("Player 1 win")
                 else:
                     self.send("Player 2 win")
-
             else:
                 self.send("no_win")
 
@@ -99,11 +98,11 @@ class ClientThread(threading.Thread):
 
         # Handle the player change
         if self.game.check_win() == False:
-
+        
             # change the active player
-            if self.game.active_player == 1:
+            if self.game.active_player == 1 and self.game.end == False:
                 self.game.active_player = 2
-            else:
+            elif self.game.active_player == 2 and self.game.end == False:
                 self.game.active_player = 1
 
     # Run methods of the client thread

@@ -74,9 +74,15 @@ class OnlineGame(game.Game):
             self._end = True
             self.game_song.stop()
             self.display_thread.join()
-            end_screen = game.EndScreen(
-                self._screen, self.width, self.height, self._player_number)
-            end_screen.display()
+
+            if data == "Player 1 win":
+                end_screen = game.EndScreen(
+                    self._screen, self.width, self.height,1)
+                end_screen.display()
+            elif data == "Player 2 win":
+                end_screen = game.EndScreen(
+                    self._screen, self.width, self.height,2)
+                end_screen.display()
 
     # Update the grid
     def __update_grid(self):
