@@ -56,13 +56,20 @@ class OnlineSettings():
 
                 if(self.buttons[1].rect.collidepoint(mouse_position)):
 
-                    self.config_handler.set_value('NETWORK', 'ip', self.textboxes[0].text)
-                    self.config_handler.set_value('NETWORK', 'port', self.textboxes[1].text)
-                    self.config_handler.set_value('PLAYER', 'name', self.textboxes[2].text)
+                    try:
 
-                    self.running = False
-                    new_game = game.OnlineGame(self.screen, self.width, self.height, self.textboxes[0].text, self.textboxes[1].text, self.textboxes[2].text)
-                    new_game.start_game()
+                        self.config_handler.set_value('NETWORK', 'ip', self.textboxes[0].text)
+                        self.config_handler.set_value('NETWORK', 'port', self.textboxes[1].text)
+                        self.config_handler.set_value('PLAYER', 'name', self.textboxes[2].text)
+
+                        self.running = False
+                        
+                        new_game = game.OnlineGame(self.screen, self.width, self.height, self.textboxes[0].text, self.textboxes[1].text, self.textboxes[2].text)
+                        new_game.start_game()
+                    
+                    except Exception as e:
+                        print(e)
+                        self.running = False
 
             for textbox in self.textboxes:
                 textbox.handle_events(event)
