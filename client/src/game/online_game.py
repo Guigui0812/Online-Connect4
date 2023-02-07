@@ -175,6 +175,7 @@ class OnlineGame(game.Game):
             # Wait for the server to be ready
             self.__wait_for_server()
 
+            # Set a song for the game
             self.game_song.play(-1)
 
             # Start the display thread
@@ -184,7 +185,7 @@ class OnlineGame(game.Game):
             while self._end == False:
 
                 # Ask the server if the other client is ready
-                if self._connection.server_alive():
+                if self._connection.check_alive():
 
                     # Check if the game is over
                     self._check_win()

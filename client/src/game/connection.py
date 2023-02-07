@@ -11,44 +11,46 @@ class Connection:
         self.host, self.port = host, int(port)
         self.server_alive = False
 
-        # keep alive thread to keep the connection alive
+        # keep alive thread to handle connection break
+        self.lock = threading.Lock()
         self.keep_alive_thread_running = True
-        self.keep_alive_thread = threading.Thread(target=self.keep_alive_message)
-        self.keep_alive_thread.start()
+        self.keep_alive_thread = threading.Thread(target=self.send_keep_alive)
 
     # Method to connect to the server
     def connect(self):
         try:
-            self.socket.connect((self.host, self.port))
-            print("client is connected to server")
+            self.socket.connect((self.host, self.port)) # connect to the server
+            print("client is connected to server") # print a message to the console
+
+            self.keep_alive_thread.start() # start the keep alive thread
             return True
         except:
             print("client failed to connect to server")
             return False
 
-    def server_alive(self):
+    # Check if the server is still alive
+    def check_alive(self):
         
-        if self.server_alive == True:
-            return True
-        else:
-            return False
+        print(self.server_alive)
+
+        with self.lock:
+            if self.server_alive == True:
+                return True
+            else:
+                return False
 
     # Check if the server is still alive
-    def keep_alive_message(self):
+    def send_keep_alive(self):
 
         # while the thread is running send a keep alive message to the server
-        while self.keep_alive_thread_running:
-            self.send_string("keep_alive")
-            data = self.receive_string()
+        while self.keep_alive_thread_running == True:
 
-            if data == "keep_alive":
-                self.server_alive = True
-                time.sleep(1)
-            else:
-                print("server is not alive")
-                self.server_alive = False
-                self.close()
-                self.keep_alive_thread_running = False
+            self.send_string("keep_alive")
+            response = self.receive_string()
+            with self.lock:
+                if response == "keep_alive":
+                    self.server_alive = True
+                    time.sleep(5)
         
     # Send a string to the server
     def send_string(self, data):

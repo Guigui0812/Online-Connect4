@@ -2,6 +2,7 @@ import threading
 import pickle
 import sys
 import re
+import time
 
 class ClientThread(threading.Thread):
 
@@ -21,6 +22,7 @@ class ClientThread(threading.Thread):
         self.game = game
         self.session_identifier = session_identifier
         self.game.number_of_players += 1
+        self.timer = time.time()
 
     # Management of the strings request type
     def __handle_string_format_request(self, data):
@@ -41,7 +43,9 @@ class ClientThread(threading.Thread):
 
             self.send(str(self.session_identifier))
 
-        elif "keep_alive" in data:
+        elif data == "keep_alive" :
+            print("Keep alive received")
+            self.time = time.time()
             self.send("keep_alive")
 
         # Send the state of the server (ready or not)
@@ -119,9 +123,13 @@ class ClientThread(threading.Thread):
         # infinite loop
         while True:
 
+            current_time = time.time()
+            if current_time - self.timer > 10:
+                print("Client lost")
+
             # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)
-
+            
             try:
                 # if the data is a string
                 self.__handle_string_format_request(data)
