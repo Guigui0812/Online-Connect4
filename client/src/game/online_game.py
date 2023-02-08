@@ -37,37 +37,7 @@ class OnlineGame(game.Game):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouseX, mouseY = pygame.mouse.get_pos()
                     self._set_coin_event(mouseX)
-
-    # Handle disconnection
-    def __disconnect(self):
-
-        self._connection.send_string("close_client_network")
-        data = self._connection.receive_string()
-
-        if data == "client_network_closed":
-            self._connection.close()
-            self._end = True
-            self.display_thread.join()
-            print("Disconnected")
-
-    """
-    # Check if the other player is still connected
-    def __check_client_alive(self):
-
-        self._connection.send_string("check_client_alive")
-        data = self._connection.receive_string()
-
-        if data == "client_lost":
-            self._end = True
-            self._connection.close()
-            print("Other player disconnected")
-            return False
-
-        return True
-
-    """
-    
-
+              
     # Check if the game is over
     def _check_win(self):
 
@@ -116,8 +86,7 @@ class OnlineGame(game.Game):
 
         print("waiting for server to be ready")
 
-        waiting_screen = game.WaitingScreen(
-            self._screen, self.width, self.height)
+        waiting_screen = game.WaitingScreen(self._screen, self.width, self.height)
         waiting_screen.start()
 
         server_ready = False
@@ -127,6 +96,7 @@ class OnlineGame(game.Game):
 
             self._connection.send_string("client_ready")
             data = self._connection.receive_string()
+            print(data)
 
             if data == "server_ready":
                 server_ready = True
@@ -138,7 +108,9 @@ class OnlineGame(game.Game):
     def __get_player_number(self):
         self._connection.send_string("set_player_nb_and_name oui")
         data = self._connection.receive_string()
-        self._player_number = int(data)
+
+        if data == "1" or data == "2":
+            self._player_number = int(data)
 
     # Display the game
     def _display(self):
@@ -151,16 +123,13 @@ class OnlineGame(game.Game):
             self.clock.tick(60)
 
     # End the game
-    def _end_game_connection(self):
-        try:
-            # Disconnect from the server
-            self.__disconnect()
-        except:
-            # Check if the other client is still connected before disconnecting
-            self._connection.send_string("check_client_alive")
-            self._connection.receive_string()
-            self._connection.close()
-
+    def _end_game(self):
+        
+        # Disconnect from the server
+        self._connection.close()
+        self._end = True
+        self.display_thread.join()
+            
     # Game loop
     def start_game(self):
 
@@ -196,4 +165,4 @@ class OnlineGame(game.Game):
                     # Event loop
                     self._event_handler()
             
-            self._end_game_connection()
+            self._end_game()
