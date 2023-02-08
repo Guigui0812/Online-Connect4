@@ -6,6 +6,7 @@ import threading
 # Handle the online game mode
 class OnlineGame(game.Game):
 
+    # Initialize the game
     def __init__(self, screen, width, height, ip, port, player_name):
         game.Game.__init__(self, screen, width, height)
         self._connection = game.Connection(ip, port)
@@ -49,6 +50,7 @@ class OnlineGame(game.Game):
             self.display_thread.join()
             print("Disconnected")
 
+    """
     # Check if the other player is still connected
     def __check_client_alive(self):
 
@@ -62,6 +64,9 @@ class OnlineGame(game.Game):
             return False
 
         return True
+
+    """
+    
 
     # Check if the game is over
     def _check_win(self):
@@ -97,7 +102,7 @@ class OnlineGame(game.Game):
             lastGrid["max_column_stacking"])
 
     # Ask the server for who's turn it is
-    def __check__active_player(self):
+    def __check_active_player(self):
 
         self._connection.send_string("get_active_player")
         actualPlayer = int(self._connection.receive_string())
@@ -135,6 +140,7 @@ class OnlineGame(game.Game):
         data = self._connection.receive_string()
         self._player_number = int(data)
 
+    # Display the game
     def _display(self):
 
         while self._end == False:
@@ -144,6 +150,7 @@ class OnlineGame(game.Game):
             pygame.display.update()
             self.clock.tick(60)
 
+    # End the game
     def _end_game_connection(self):
         try:
             # Disconnect from the server
@@ -168,6 +175,7 @@ class OnlineGame(game.Game):
             # Wait for the server to be ready
             self.__wait_for_server()
 
+            # Set a song for the game
             self.game_song.play(-1)
 
             # Start the display thread
@@ -177,13 +185,13 @@ class OnlineGame(game.Game):
             while self._end == False:
 
                 # Ask the server if the other client is ready
-                if self.__check_client_alive():
+                if self._connection.check_alive():
 
                     # Check if the game is over
                     self._check_win()
 
                     # Check who's turn it is
-                    self.__check__active_player()
+                    self.__check_active_player()
 
                     # Event loop
                     self._event_handler()
