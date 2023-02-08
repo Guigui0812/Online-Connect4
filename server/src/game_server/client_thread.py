@@ -28,8 +28,6 @@ class ClientThread(threading.Thread):
 
         data = data.decode("utf8")
 
-        # Depending of the message, specfic actions are processed
-
         # Send the client his player number
         if "set_player_nb_and_name" in data:
             
@@ -43,8 +41,11 @@ class ClientThread(threading.Thread):
             self.send(str(self.session_identifier))
 
         elif data == "keep_alive" :
-            self.timer = time.time()
-            self.send("keep_alive")
+            if self.game.player_left == False:
+                self.timer = time.time()
+                self.send("keep_alive")
+            else:
+                self.send("player_left")
 
         # Send the state of the server (ready or not)
         elif data == "client_ready":
@@ -127,23 +128,25 @@ class ClientThread(threading.Thread):
 
             current_time = time.time()
             if current_time - self.timer > 10:
-                print("Client left")
+                self.game.player_left = True
 
             # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)
             
-            try:
-                # if the data is a string
-                self.__handle_string_format_request(data)
+            if data != b'':
 
-            except:
+                try:
+                    # if the data is a string
+                    self.__handle_string_format_request(data)
 
-                # deserialize the data
-                data = pickle.loads(data)
+                except:
 
-                # if is a dictionary process it
-                if type(data) == dict:
-                    self.__handle_dictionary_format_request(data)
+                    # deserialize the data
+                    data = pickle.loads(data)
+
+                    # if is a dictionary process it
+                    if type(data) == dict:
+                        self.__handle_dictionary_format_request(data)
 
     # Method to send "string" data to the client
     def send(self, data):
