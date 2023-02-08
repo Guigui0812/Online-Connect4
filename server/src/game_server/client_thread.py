@@ -1,6 +1,5 @@
 import threading
 import pickle
-import sys
 import re
 import time
 
@@ -44,8 +43,7 @@ class ClientThread(threading.Thread):
             self.send(str(self.session_identifier))
 
         elif data == "keep_alive" :
-            print("Keep alive received")
-            self.time = time.time()
+            self.timer = time.time()
             self.send("keep_alive")
 
         # Send the state of the server (ready or not)
@@ -117,6 +115,10 @@ class ClientThread(threading.Thread):
             elif self.game.active_player == 2 and self.game.end == False:
                 self.game.active_player = 1
 
+    def close(self):
+        self.connection.close()
+        self.join()
+
     # Run methods of the client thread
     def run(self):
 
@@ -125,7 +127,7 @@ class ClientThread(threading.Thread):
 
             current_time = time.time()
             if current_time - self.timer > 10:
-                print("Client lost")
+                print("Client left")
 
             # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)

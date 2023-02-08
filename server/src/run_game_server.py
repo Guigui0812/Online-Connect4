@@ -27,7 +27,7 @@ def handle_signal(signum, frame):
 
     # Kill all threads
     for client in game_server.ClientThread.clients:
-        client.stop()
+        client.close()
     
     print("Closing server socket...")
 
@@ -49,6 +49,7 @@ while True:
 
     connection, address = server_socket.accept()
 
+    # if there is a new connection, we create a new thread for it
     game_server.ClientThread.number_of_clients += 1
     
     if game_server.ClientThread.number_of_clients % 2 == 1:
