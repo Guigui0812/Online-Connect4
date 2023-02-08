@@ -42,8 +42,13 @@ class ClientThread(threading.Thread):
 
         elif data == "keep_alive" :
             if self.game.player_left == False:
-                self.timer = time.time()
-                self.send("keep_alive")
+                if self.game.end == False:
+                    self.timer = time.time()
+                    self.send("keep_alive")
+                else :
+                    print("player lost, game ended")
+                    self.connection.close()
+                    self.join()
             else:
                 self.send("player_left")
 
@@ -69,8 +74,7 @@ class ClientThread(threading.Thread):
             # if the game is ended, there's a winner
             if self.game.end == True:
                 if self.game.active_player == 1:
-                    self.send("Player 1 win")
-                    
+                    self.send("Player 1 win")        
                 else:
                     self.send("Player 2 win")
             else:
