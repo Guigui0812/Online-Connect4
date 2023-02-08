@@ -6,3 +6,13 @@ services:
       - ./src:/connect4_server
     ports:
       - "12345:12345"
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db

@@ -2,11 +2,15 @@ import threading
 import pickle
 import sys
 import re
+import time
 
 class ClientThread(threading.Thread):
 
     # Number of client currently connected
     number_of_clients = 0
+
+    # List of all the clients
+    clients = []
 
     # objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
     # objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
@@ -18,6 +22,7 @@ class ClientThread(threading.Thread):
         self.game = game
         self.session_identifier = session_identifier
         self.game.number_of_players += 1
+        self.timer = time.time()
 
     # Management of the strings request type
     def __handle_string_format_request(self, data):
@@ -37,6 +42,11 @@ class ClientThread(threading.Thread):
                 self.game.player2_name = player_name[1]
 
             self.send(str(self.session_identifier))
+
+        elif data == "keep_alive" :
+            print("Keep alive received")
+            self.time = time.time()
+            self.send("keep_alive")
 
         # Send the state of the server (ready or not)
         elif data == "client_ready":
@@ -61,6 +71,7 @@ class ClientThread(threading.Thread):
             if self.game.end == True:
                 if self.game.active_player == 1:
                     self.send("Player 1 win")
+                    
                 else:
                     self.send("Player 2 win")
             else:
@@ -77,15 +88,16 @@ class ClientThread(threading.Thread):
             if self.game.player_left == False:
                 self.send("client_ok")
             else:
+                print("Client left")
                 self.send("client_lost")
                 self.connection.close()
-                sys.exit()
+                self.join()
         
         # Instruction to handle the end of the game and finish it
         elif data == "game_end":
             self.send("game_closed")
             self.connection.close()
-            sys.exit()
+            self.join()
 
     # Manages the "none-string" request (it's just dictionnaries in our case)
     def __handle_dictionary_format_request(self, data):
@@ -111,11 +123,13 @@ class ClientThread(threading.Thread):
         # infinite loop
         while True:
 
+            current_time = time.time()
+            if current_time - self.timer > 10:
+                print("Client lost")
+
             # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)
-            print(self.game.player1_name)
-            print(self.game.player2_name)
-
+            
             try:
                 # if the data is a string
                 self.__handle_string_format_request(data)
