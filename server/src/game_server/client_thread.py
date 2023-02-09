@@ -45,7 +45,8 @@ class ClientThread(threading.Thread):
                 if self.game.end == False:
                     self.timer = time.time()
                     self.send("keep_alive")
-                else :
+                else:
+                    self.send("player_lost")
                     print("player lost, game ended")
                     self.connection.close()
                     self.join()
@@ -99,8 +100,7 @@ class ClientThread(threading.Thread):
         # Instruction to handle the end of the game and finish it
         elif data == "game_end":
             self.send("game_closed")
-            self.connection.close()
-            self.join()
+            self.close()
 
     # Manages the "none-string" request (it's just dictionnaries in our case)
     def __handle_dictionary_format_request(self, data):
@@ -131,8 +131,9 @@ class ClientThread(threading.Thread):
         while True:
 
             current_time = time.time()
-            if current_time - self.timer > 10:
+            if current_time - self.timer > 20:
                 self.game.player_left = True
+                self.close()
 
             # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)
