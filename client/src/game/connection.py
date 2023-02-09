@@ -32,20 +32,28 @@ class Connection:
     def check_alive(self):
         if self.server_alive == True:    
             return True
+        else:
+            return False
            
     # Check if the server is still alive
     def send_keep_alive(self):
 
         # while the thread is running send a keep alive message to the server
-        while self.keep_alive_thread_running == True:               
+        while self.keep_alive_thread_running == True:       
+
             self.send_string("keep_alive")
             response = self.receive_string()
             
             if response == "keep_alive":                 
                 self.server_alive = True
                 
-            elif response == "player_lost":               
+            elif response == "player_lost": 
+
+                self.send_string("game_end")
+                response = self.receive_string()
+
                 self.server_alive = False
+                self.keep_alive_thread_running = False
          
             time.sleep(10)
         
@@ -64,9 +72,10 @@ class Connection:
         try:
             self.lock.acquire() # acquire the lock
             data = self.socket.recv(1024)
+            self.lock.release() # release the lock
 
             if data != b'':
-                self.lock.release() # release the lock
+                
                 data = data.decode("utf8")
                 return data
         except ConnectionAbortedError:
@@ -87,8 +96,9 @@ class Connection:
         try:
             self.lock.acquire() # acquire the lock
             data = self.socket.recv(1024)
-            if data != b'':
-                self.lock.release() # release the lock
+            self.lock.release() # release the lock
+            
+            if data != b'':         
                 return data
         except ConnectionRefusedError:
             print("client failed to receive data from server")
@@ -96,7 +106,8 @@ class Connection:
     # Close the connection
     def close(self):
         try:
+            self.keep_alive_thread_running = False  
             self.socket.close()
-            print("client closed connection")
+            print("connection closed")
         except ConnectionRefusedError:
             print("client failed to close connection")

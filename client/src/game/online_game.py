@@ -29,9 +29,7 @@ class OnlineGame(game.Game):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.game_song.stop()
-                self.__disconnect()
-                pygame.quit()
+                self._end = True
 
             if self._active_player == self._player_number:
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -124,11 +122,16 @@ class OnlineGame(game.Game):
 
     # End the game
     def _end_game(self):
-        
-        # Disconnect from the server
-        self._connection.close()
-        self._end = True
-        self.display_thread.join()
+
+        self._connection.send_string("game_end")
+        data = self._connection.receive_string()
+
+        if data == "game_closed":         
+            # Disconnect from the server
+            self._connection.close()
+            self.display_thread.join()
+
+            print("game closed")  
             
     # Game loop
     def start_game(self):
@@ -153,16 +156,19 @@ class OnlineGame(game.Game):
             # Start the game loop
             while self._end == False:
 
-                # Ask the server if the other client is ready
-                if self._connection.check_alive():
+                if self._connection.check_alive() == True:
 
                     # Check if the game is over
                     self._check_win()
-
                     # Check who's turn it is
                     self.__check_active_player()
 
                     # Event loop
                     self._event_handler()
-            
+
+                else:
+                    self._end = True
+                    print("Game ended unexpectedly")
+                    
+            # End the game
             self._end_game()
