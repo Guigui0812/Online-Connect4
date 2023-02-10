@@ -74,7 +74,10 @@ class OnlineGame(game.Game):
     def __check_active_player(self):
 
         self._connection.send_string("get_active_player")
-        actualPlayer = int(self._connection.receive_string())
+        actualPlayer = self._connection.receive_string()
+
+        if actualPlayer == "1" or actualPlayer == "2":
+            actualPlayer = int(actualPlayer)
 
         if actualPlayer != self._active_player:
             self._active_player = actualPlayer
