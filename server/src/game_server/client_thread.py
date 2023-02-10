@@ -41,17 +41,15 @@ class ClientThread(threading.Thread):
             self.send(str(self.session_identifier))
 
         elif data == "keep_alive" :
-            if self.game.player_left == False:
-                if self.game.end == False:
-                    self.timer = time.time()
-                    self.send("keep_alive")
-                else:
-                    self.send("player_lost")
-                    print("player lost, game ended")
-                    self.connection.close()
-                    self.join()
+
+            if self.game.player_left == False and self.game.end == False:      
+                self.timer = time.time()
+                self.send("keep_alive")
             else:
-                self.send("player_left")
+                self.send("player_lost")
+                print("player lost, game ended")
+                self.connection.close()
+                self.join()
 
         # Send the state of the server (ready or not)
         elif data == "client_ready":
@@ -80,22 +78,6 @@ class ClientThread(threading.Thread):
                     self.send("Player 2 win")
             else:
                 self.send("no_win")
-
-        # Signal to handle the closing of the app by the client
-        elif data == "close_client_network":
-            self.game.player_left = True
-            self.send("client_network_closed")
-
-        # Check if the client is alive, if it leaves the game, the server needs to close the connection
-        elif data == "check_client_alive":
-
-            if self.game.player_left == False:
-                self.send("client_ok")
-            else:
-                print("Client left")
-                self.send("client_lost")
-                self.connection.close()
-                self.join()
         
         # Instruction to handle the end of the game and finish it
         elif data == "game_end":
@@ -130,28 +112,28 @@ class ClientThread(threading.Thread):
         # infinite loop
         while True:
 
-            current_time = time.time()
-            if current_time - self.timer > 20:
-                self.game.player_left = True
-                self.close()
-
-            # Check if it receives a data, and tryto handle it via the string method, if not it's a dictionnary
+            # Check if it receives a data, and try to handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(1024)
             
             if data != b'':
-
+                print(data)
                 try:
                     # if the data is a string
+                    
                     self.__handle_string_format_request(data)
 
                 except:
-
+                    print(data)
                     # deserialize the data
                     data = pickle.loads(data)
 
                     # if is a dictionary process it
                     if type(data) == dict:
                         self.__handle_dictionary_format_request(data)
+
+            #current_time = time.time()
+            #if current_time - self.timer > 20:
+            #    print("Client lost")
 
     # Method to send "string" data to the client
     def send(self, data):

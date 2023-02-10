@@ -10,7 +10,7 @@ class Connection:
         # Create the socket
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host, self.port = host, int(port)
-        self.server_alive = False
+        self.server_alive = True 
 
         # keep alive thread to handle connection break
         self.lock = threading.Lock()
@@ -44,10 +44,7 @@ class Connection:
             self.send_string("keep_alive")
             response = self.receive_string()
             
-            if response == "keep_alive":                 
-                self.server_alive = True
-                
-            elif response == "player_lost": 
+            if response == "player_lost": 
 
                 self.send_string("game_end")
                 response = self.receive_string()
@@ -61,18 +58,18 @@ class Connection:
     def send_string(self, data):
         try:
             data = data.encode("utf8")
-            self.lock.acquire() # acquire the lock
-            self.socket.sendall(data)
-            self.lock.release() # release the lock
+
+            with self.lock:
+                self.socket.sendall(data)
+            
         except ConnectionRefusedError:
             print("client failed to send data to server")
 
     # Receive a string from the server
     def receive_string(self):
         try:
-            self.lock.acquire() # acquire the lock
-            data = self.socket.recv(1024)
-            self.lock.release() # release the lock
+            with self.lock:
+                data = self.socket.recv(1024)
 
             if data != b'':
                 
@@ -84,9 +81,9 @@ class Connection:
     # Send data to the server
     def send_data(self, data):
         try:
-            self.lock.acquire() # acquire the lock
-            self.socket.sendall(data)
-            self.lock.release() # release the lock
+            with self.lock:
+                self.socket.sendall(data)
+            
             #print("client sent ", data)
         except ConnectionRefusedError:
             print("client failed to send data to server")
@@ -94,9 +91,8 @@ class Connection:
     # Receive data from the server
     def receive_data(self):
         try:
-            self.lock.acquire() # acquire the lock
-            data = self.socket.recv(1024)
-            self.lock.release() # release the lock
+            with self.lock:
+                data = self.socket.recv(1024)         
             
             if data != b'':         
                 return data
@@ -107,7 +103,8 @@ class Connection:
     def close(self):
         try:
             self.keep_alive_thread_running = False  
-            self.socket.close()
+            with self.lock:
+                self.socket.close()
             print("connection closed")
         except ConnectionRefusedError:
             print("client failed to close connection")

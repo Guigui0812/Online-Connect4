@@ -5,6 +5,7 @@ import game
 class SoloGame(game.Game):
     def __init__(self, _screen, width, height):
         game.Game.__init__(self, _screen, width, height)
+        self.clock = pygame.time.Clock()
 
     def _check_win(self):
 

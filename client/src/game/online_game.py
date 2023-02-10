@@ -13,6 +13,7 @@ class OnlineGame(game.Game):
         self._player_number = 1
         self.display_thread = threading.Thread(target=self._display)
         self._player_name = player_name
+        self.clock = pygame.time.Clock()
 
     # Event of setting a coin in the grid
     def _set_coin_event(self, mouse_x):
@@ -156,10 +157,15 @@ class OnlineGame(game.Game):
             # Start the game loop
             while self._end == False:
 
+                # loop at a fixed rate of 60 frames per second
+                self.clock.tick(60)
+
+
                 if self._connection.check_alive() == True:
 
                     # Check if the game is over
                     self._check_win()
+                    
                     # Check who's turn it is
                     self.__check_active_player()
 
