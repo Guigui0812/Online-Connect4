@@ -1,5 +1,5 @@
 import threading
-import pickle
+import json
 import re
 import time
 
@@ -25,13 +25,15 @@ class ClientThread(threading.Thread):
 
     # Method to send "string" data to the client
     def send(self, data):
+        print("sending data to client: " + data)
         data = data.encode("utf8")
         self.connection.sendall(data)
 
     # Management of the strings request type
     def __handle_string_format_request(self, data):
 
-        data = data.decode("utf8")
+        data = data["request_type"]
+        print(data)
 
         # Send the client his player number
         if "set_player_nb_and_name" in data:
@@ -45,17 +47,6 @@ class ClientThread(threading.Thread):
 
             self.send(str(self.session_identifier))
 
-        elif data == "keep_alive" :
-
-            if self.game.player_left == False and self.game.end == False:      
-                self.timer = time.time()
-                self.send("keep_alive")
-            else:
-                self.send("player_lost")
-                print("player lost, game ended")
-                self.connection.close()
-                self.join()
-
         # Send the state of the server (ready or not)
         elif data == "client_ready":
             if self.game.game_ready():
@@ -65,8 +56,9 @@ class ClientThread(threading.Thread):
 
         # send the grid to the client so that it can update his one
         elif data == "get_grid":
+            print("sending grid to client")
             # get the serialized grid object
-            self.connection.sendall(self.game.grid.get_serialized_box_status_matrix())
+            self.send(self.game.grid.get_serialized_matrix())
 
         # get the active player in the current game session
         elif data == "get_active_player":
@@ -90,14 +82,26 @@ class ClientThread(threading.Thread):
             time.sleep(3)
             self.close()
 
+    def __handle_keep_alive(self):
+        
+        if self.game.player_left == False and self.game.end == False:      
+            self.timer = time.time()
+            self.send("keep_alive")
+        else:
+            self.send("player_lost")
+            print("player lost, game ended")
+            self.connection.close()
+            self.join()
+
     # Manages the "none-string" request (it's just dictionnaries in our case)
-    def __handle_dictionary_format_request(self, data):
+    def __handle_dictionary_format_request(self, lastGrid):
 
         # When we receive a dictionnary, it's the updated grid of the client --> Deserialization
         self.send("grid_updated")
         self.game.number_of_turns = self.game.number_of_turns+1
-        self.game.grid.box_status_matrix = pickle.loads(data["box_status_matrix"])
-        self.game.grid.max_column_stacking = pickle.loads(data["max_column_stacking"])
+
+        self.game.grid.box_status_matrix = lastGrid["box_status_matrix"]
+        self.game.grid.max_column_stacking = lastGrid["max_column_stacking"]
 
         # Handle the player change
         if self.game.check_win() == False:
@@ -119,23 +123,24 @@ class ClientThread(threading.Thread):
         while True:
 
             # Check if it receives a data, and try to handle it via the string method, if not it's a dictionnary
-            data = self.connection.recv(1024)
+            data = self.connection.recv(2048)
             
             if data != b'':
                 print(data)
                 try:
-                           
-                    self.__handle_string_format_request(data)
-
-                except:
+                    data = data.decode("utf8")
+                    data = json.loads(data)
                     
-                    # deserialize the data
-                    data = pickle.loads(data)
-
-                    # if is a dictionary process it
-                    if type(data) == dict:
+                    if data["message_type"] == "game_request":
+                        self.__handle_string_format_request(data)
+                    elif data["message_type"] == "keep_alive":
+                        self.__handle_keep_alive()
+                    elif data["message_type"] == "grid":
                         self.__handle_dictionary_format_request(data)
 
+                except:
+                    print("error : data not handled or truncated : ", data)                   
+                
             current_time = time.time()
             if current_time - self.timer > 20:
                 self.close()

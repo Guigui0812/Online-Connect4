@@ -1,6 +1,6 @@
 import pygame
 import game
-import pickle
+import json
 import threading
 
 # Handle the online game mode
@@ -20,9 +20,13 @@ class OnlineGame(game.Game):
 
         if self._grid.set_box(mouse_x, self._player_number, self._screen, self.layers[0]) == True:
 
-            self._connection.send_data(self._grid.get_serialized_matrix())
+            self._connection.send_string(self._grid.get_serialized_matrix())
             self._connection.receive_string()
-            self._connection.send_string("check_win")
+
+            data_to_send =  {"message_type": "game_request", "request_type": "check_win"}
+            data_to_send = json.dumps(data_to_send)
+            self._connection.send_string(data_to_send)
+
             self._connection.receive_string()
 
     # Event handler
@@ -40,7 +44,10 @@ class OnlineGame(game.Game):
     # Check if the game is over
     def _check_win(self):
 
-        self._connection.send_string("check_win")
+        data_to_send =  {"message_type": "game_request", "request_type": "check_win"}
+        data_to_send = json.dumps(data_to_send)
+        self._connection.send_string(data_to_send)
+
         data = self._connection.receive_string()
 
         if data == "Player 1 win" or data == "Player 2 win":
@@ -61,19 +68,24 @@ class OnlineGame(game.Game):
     # Update the grid
     def __update_grid(self):
 
-        # Ask the server for the grid and update it
-        self._connection.send_string("get_grid")
-        serialized_server_grid = self._connection.receive_data()
-        lastGrid = pickle.loads(serialized_server_grid)
-        self._grid.box_status_matrix = pickle.loads(
-            lastGrid["box_status_matrix"])
-        self._grid.max_column_stacking = pickle.loads(
-            lastGrid["max_column_stacking"])
+        data_to_send = {"message_type": "game_request", "request_type": "get_grid"}
+        data_to_send = json.dumps(data_to_send)
+        self._connection.send_string(data_to_send)
+
+        data = self._connection.receive_string()
+        
+        lastGrid = json.loads(data)
+
+        self._grid.box_status_matrix = lastGrid["box_status_matrix"]
+        self._grid.max_column_stacking = lastGrid["max_column_stacking"]
 
     # Ask the server for who's turn it is
     def __check_active_player(self):
 
-        self._connection.send_string("get_active_player")
+        data_to_send = {"message_type": "game_request", "request_type": "get_active_player"}
+        data_to_send = json.dumps(data_to_send)
+        self._connection.send_string(data_to_send)
+
         actualPlayer = self._connection.receive_string()
 
         if actualPlayer == "1" or actualPlayer == "2":
@@ -96,7 +108,10 @@ class OnlineGame(game.Game):
         # Wait for the server to be ready
         while server_ready == False:
 
-            self._connection.send_string("client_ready")
+            data_to_send =  {"message_type": "game_request", "request_type": "client_ready"}
+            data_to_send = json.dumps(data_to_send)
+            self._connection.send_string(data_to_send)
+
             data = self._connection.receive_string()
             print(data)
 
@@ -108,7 +123,11 @@ class OnlineGame(game.Game):
 
     # Get the player number from the server and set the playername on it
     def __get_player_number(self):
-        self._connection.send_string("set_player_nb_and_name oui")
+
+        data_to_send =  {"message_type": "game_request", "request_type": "set_player_nb_and_name oui"}
+        data_to_send = json.dumps(data_to_send)
+        self._connection.send_string(data_to_send)
+
         data = self._connection.receive_string()
 
         if data == "1" or data == "2":
@@ -127,7 +146,10 @@ class OnlineGame(game.Game):
     # End the game
     def _end_game(self):
 
-        self._connection.send_string("game_end")
+        data_to_send =  {"message_type": "game_request", "request_type": "game_end"}
+        data_to_send = json.dumps(data_to_send)
+        self._connection.send_string(data_to_send)
+
         data = self._connection.receive_string()
 
         if data == "game_closed":         

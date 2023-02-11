@@ -1,6 +1,5 @@
 import pygame
-import numpy as np
-import pickle
+import json
 import game
 
 ROW_COUNT = 6
@@ -11,10 +10,10 @@ class Grid:
     def __init__(self):
 
         # Create a matrix of 0
-        self.box_status_matrix = np.zeros((ROW_COUNT, COLUMN_COUNT))
+        self.box_status_matrix = [[0 for j in range(COLUMN_COUNT)] for i in range(ROW_COUNT)]
 
         # Create a matrix of boxes
-        self.visual_matrix = np.full((ROW_COUNT, COLUMN_COUNT), None)
+        self.visual_matrix = [[0 for j in range(COLUMN_COUNT)] for i in range(ROW_COUNT)]
 
         # Set up the boxes
         for i in range(ROW_COUNT):
@@ -60,18 +59,16 @@ class Grid:
         return False
 
     def get_serialized_matrix(self):
-
-        # dictionary that will be serialized
-        DictOfserializedObject = {
-            "box_status_matrix": pickle.dumps(self.box_status_matrix),
-            "max_column_stacking": pickle.dumps(self.max_column_stacking),
+    
+        serialized_objects_dict = {
+            "message_type": "grid",
+            "box_status_matrix": self.box_status_matrix,
+            "max_column_stacking": self.max_column_stacking
         }
-
-        # serialize the dictionary
-        serializedObject = pickle.dumps(DictOfserializedObject)
-
-        # return the serialized object
-        return serializedObject
+        
+        json_serialized_objects_dict = json.dumps(serialized_objects_dict)
+       
+        return json_serialized_objects_dict
 
     # Check if the game is over
     def check_win(self, player):

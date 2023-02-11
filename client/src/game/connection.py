@@ -1,6 +1,7 @@
 import socket
 import threading
 import time
+import json
 
 class Connection:
 
@@ -41,12 +42,22 @@ class Connection:
         # while the thread is running send a keep alive message to the server
         while self.keep_alive_thread_running == True:       
 
-            self.send_string("keep_alive")
+            # send a keep alive message to the server as a json
+
+            data_to_send =  {"message_type": "keep_alive"}
+            data_to_send = json.dumps(data_to_send)
+            self.send_string(data_to_send)
+
             response = self.receive_string()
             
             if response == "player_lost": 
 
-                self.send_string("game_end")
+                # send a game_end message to the server as a json
+
+                data_to_send =  {"message_type": "game_request", "request_type": "game_end"}
+                data_to_send = json.dumps(data_to_send)
+                self.send_string(data_to_send)
+
                 response = self.receive_string()
 
                 self.server_alive = False
@@ -57,6 +68,7 @@ class Connection:
     # Send a string to the server
     def send_string(self, data):
         try:
+            print(data)
             data = data.encode("utf8")
 
             with self.lock:
@@ -72,7 +84,7 @@ class Connection:
                 data = self.socket.recv(1024)
 
             if data != b'':
-                
+                print(data)
                 data = data.decode("utf8")
                 return data
         except ConnectionAbortedError:
@@ -81,6 +93,7 @@ class Connection:
     # Send data to the server
     def send_data(self, data):
         try:
+            print(data)
             with self.lock:
                 self.socket.sendall(data)
                 
@@ -91,8 +104,7 @@ class Connection:
     def receive_data(self):
         try:
             with self.lock:
-                data = self.socket.recv(1024)         
-            
+                data = self.socket.recv(1024)              
             if data != b'':         
                 return data
         except ConnectionRefusedError:
