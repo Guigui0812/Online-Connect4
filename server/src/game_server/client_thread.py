@@ -22,6 +22,7 @@ class ClientThread(threading.Thread):
         self.session_identifier = session_identifier
         self.game.number_of_players += 1
         self.timer = time.time()
+        self.connected = True
 
     # Method to send "string" data to the client
     def send(self, data):
@@ -120,7 +121,7 @@ class ClientThread(threading.Thread):
     def run(self):
 
         # infinite loop
-        while True:
+        while self.connected:
 
             # Check if it receives a data, and try to handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(2048)
@@ -143,4 +144,7 @@ class ClientThread(threading.Thread):
                 
             current_time = time.time()
             if current_time - self.timer > 20:
+                print("player lost, game ended")
+                self.connected = False
+                self.game.player_left = True
                 self.close()
