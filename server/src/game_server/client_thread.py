@@ -23,6 +23,11 @@ class ClientThread(threading.Thread):
         self.game.number_of_players += 1
         self.timer = time.time()
 
+    # Method to send "string" data to the client
+    def send(self, data):
+        data = data.encode("utf8")
+        self.connection.sendall(data)
+
     # Management of the strings request type
     def __handle_string_format_request(self, data):
 
@@ -82,6 +87,7 @@ class ClientThread(threading.Thread):
         # Instruction to handle the end of the game and finish it
         elif data == "game_end":
             self.send("game_closed")
+            time.sleep(3)
             self.close()
 
     # Manages the "none-string" request (it's just dictionnaries in our case)
@@ -118,12 +124,11 @@ class ClientThread(threading.Thread):
             if data != b'':
                 print(data)
                 try:
-                    # if the data is a string
-                    
+                           
                     self.__handle_string_format_request(data)
 
                 except:
-                    print(data)
+                    
                     # deserialize the data
                     data = pickle.loads(data)
 
@@ -131,11 +136,6 @@ class ClientThread(threading.Thread):
                     if type(data) == dict:
                         self.__handle_dictionary_format_request(data)
 
-            #current_time = time.time()
-            #if current_time - self.timer > 20:
-            #    print("Client lost")
-
-    # Method to send "string" data to the client
-    def send(self, data):
-        data = data.encode("utf8")
-        self.connection.sendall(data)
+            current_time = time.time()
+            if current_time - self.timer > 20:
+                self.close()

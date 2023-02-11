@@ -43,7 +43,7 @@ class OnlineGame(game.Game):
         self._connection.send_string("check_win")
         data = self._connection.receive_string()
 
-        if data != "no_win":
+        if data == "Player 1 win" or data == "Player 2 win":
 
             self._end = True
             self.game_song.stop()
@@ -162,7 +162,6 @@ class OnlineGame(game.Game):
 
                 # loop at a fixed rate of 60 frames per second
                 self.clock.tick(60)
-
 
                 if self._connection.check_alive() == True:
 

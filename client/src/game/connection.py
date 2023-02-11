@@ -83,8 +83,7 @@ class Connection:
         try:
             with self.lock:
                 self.socket.sendall(data)
-            
-            #print("client sent ", data)
+                
         except ConnectionRefusedError:
             print("client failed to send data to server")
 
