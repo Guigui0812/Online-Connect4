@@ -2,6 +2,7 @@ import threading
 import json
 import re
 import time
+import sys 
 
 class ClientThread(threading.Thread):
 
@@ -34,18 +35,17 @@ class ClientThread(threading.Thread):
     # Management of the strings request type
     def __handle_string_format_request(self, data):
 
+        message = data 
         data = data["request_type"]
         print(data)
 
         # Send the client his player number
-        if "set_player_nb_and_name" in data:
+        if "set_player_nb_and_name" == data:
             
-            if (self.session_identifier == 1):
-                player_name = re.split("\s", data)
-                self.game.player1_name = player_name[1]
+            if (self.session_identifier == 1):      
+                self.game.player1_name = message["player_name"]
             else:
-                player_name = re.split("\s", data)
-                self.game.player2_name = player_name[1]
+                self.game.player2_name = message["player_name"]
 
             self.send(str(self.session_identifier))
 
@@ -72,17 +72,24 @@ class ClientThread(threading.Thread):
             # if the game is ended, there's a winner
             if self.game.end == True:
                 if self.game.active_player == 1:
-                    self.send("Player 1 win")        
+
+                    # send a json message to the client to display the winner
+                    json_message = {"message_type" : "win", "winner" : self.game.player1_name}
+                    self.send(json.dumps(json_message))               
                 else:
-                    self.send("Player 2 win")
+                    json_message = {"message_type" : "win", "winner" : self.game.player1_name}
+                    self.send(json.dumps(json_message))
             else:
-                self.send("no_win")
+
+                # if the game is not ended, there's no winner
+                json_message = {"message_type" : "no_win"}
+                self.send(json.dumps(json_message))
         
         # Instruction to handle the end of the game and finish it
         elif data == "game_end":
             self.send("game_closed")
             time.sleep(3)
-            self.close()
+            self.connected = False
 
     # Method to handle the keep alive request
     def __handle_keep_alive(self):
@@ -118,8 +125,9 @@ class ClientThread(threading.Thread):
 
     # Close the client thread and the connection
     def close(self):
+        print("Closing client thread")
         self.connection.close()
-        self.join()
+        sys.exit()
 
     # Run methods of the client thread
     def run(self):
@@ -159,3 +167,5 @@ class ClientThread(threading.Thread):
                 self.connected = False
                 self.game.player_left = True
                 self.close()
+
+        self.close()

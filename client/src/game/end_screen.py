@@ -2,7 +2,7 @@ import pygame
 
 class EndScreen():
 
-    def __init__(self, screen, width, height, winner):
+    def __init__(self, screen, width, height, player_color, pseudo):
         self._screen = screen
         self._running = True
         self._text = ""
@@ -13,12 +13,12 @@ class EndScreen():
         self.title_color = 0
         self.end_song = pygame.mixer.Sound('../assets/sounds/end_game_song.wav')
 
-        if winner == 1:
+        if player_color == 1:
             self.title_color = (223, 59, 15)
-            self._text = "Le joueur 1 est le vainqueur !"
+            self._text = pseudo + " est le vainqueur !"
         else:
             self.title_color = (61, 120, 255)
-            self._text = "Le joueur 2 est le vainqueur !"
+            self._text = pseudo + " est le vainqueur !"
 
     def display(self):
 

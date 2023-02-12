@@ -15,6 +15,30 @@ class OnlineGame(game.Game):
         self._player_name = player_name
         self.clock = pygame.time.Clock()
 
+    # Display the player who is playing
+    def _display_player(self):
+        
+        if self._active_player == 1:
+
+            if self._player_number == 1:
+                color = (254, 91, 47)
+                title = "A vous  " + self._player_name
+            else:
+                color = (61, 120, 255)
+                title = "Tour de l'adversaire"
+
+        else:
+            if self._player_number == 2:
+                color = (61, 120, 255)
+                title = "A vous " + self._player_name
+            else:        
+                color = (254, 91, 47)
+                title = "Tour de l'adversaire"
+
+        text = self.font.render(title, True, color)
+        text_rect = text.get_rect(center=(self.width/2, 40))
+        self._screen.blit(text, text_rect)  
+
     # Event of setting a coin in the grid
     def _set_coin_event(self, mouse_x):
 
@@ -49,20 +73,21 @@ class OnlineGame(game.Game):
         self._connection.send_string(data_to_send)
 
         data = self._connection.receive_string()
+        message = json.loads(data)
 
-        if data == "Player 1 win" or data == "Player 2 win":
+        if message["message_type"] == "win":
 
             self._end = True
             self.game_song.stop()
             self.display_thread.join()
 
-            if data == "Player 1 win":
+            if self._player_number == 1:
                 end_screen = game.EndScreen(
-                    self._screen, self.width, self.height,1)
+                    self._screen, self.width, self.height,1, message["winner"])
                 end_screen.display()
-            elif data == "Player 2 win":
+            else:
                 end_screen = game.EndScreen(
-                    self._screen, self.width, self.height,2)
+                    self._screen, self.width, self.height,2, message["winner"])
                 end_screen.display()
 
     # Update the grid
@@ -124,7 +149,7 @@ class OnlineGame(game.Game):
     # Get the player number from the server and set the playername on it
     def __get_player_number(self):
 
-        data_to_send =  {"message_type": "game_request", "request_type": "set_player_nb_and_name oui"}
+        data_to_send =  {"message_type": "game_request", "request_type": "set_player_nb_and_name", "player_name": self._player_name}
         data_to_send = json.dumps(data_to_send)
         self._connection.send_string(data_to_send)
 
@@ -140,6 +165,7 @@ class OnlineGame(game.Game):
             mouse_x, mouse_y = pygame.mouse.get_pos()
             self._draw(mouse_x)
             self._render()
+            self._display_player()
             pygame.display.update()
             self.clock.tick(60)
 

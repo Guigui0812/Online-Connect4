@@ -55,6 +55,7 @@ class SoloGame(game.Game):
             # Update the _screen
             self._draw(mouse_x)
             self._render()
+            self._display_player()
             pygame.display.update()
 
             # Event handler
