@@ -185,6 +185,7 @@ class OnlineGame(game.Game):
                 # loop at a fixed rate of 60 frames per second
                 self.clock.tick(60)
 
+                # Check if the connection is still alive
                 if self._connection.check_alive() == True:
 
                     # Check if the game is over
@@ -198,7 +199,7 @@ class OnlineGame(game.Game):
 
                 else:
                     self._end = True
-                    print("Game ended unexpectedly")
+                    print("The game ended unexpectedly")
                     
             # End the game
             self._end_game()

@@ -5,16 +5,17 @@ import time
 
 class ClientThread(threading.Thread):
 
-    # Number of client currently connected
+    # Number of client currently connected to the server
     number_of_clients = 0
 
-    # List of all the clients
+    # List of all the clients connected to the server
     clients = []
 
     # objet player pour gérer les joueurs (nom, couleur, victoires, défaite, égalité, etc...)
     # objet game pour gérer la partie (grille, tour, fin de partie, victoire, etc...) (max 2 joueurs dans la même session de jeu)
     # session terminée quand la partie est finie et que les joueurs ne veulent pas rejouer
 
+    # Constructor of the client thread
     def __init__(self, connection, game, session_identifier):
         threading.Thread.__init__(self)
         self.connection = connection
@@ -24,7 +25,7 @@ class ClientThread(threading.Thread):
         self.timer = time.time()
         self.connected = True
 
-    # Method to send "string" data to the client
+    # Method to send data to the client
     def send(self, data):
         print("sending data to client: " + data)
         data = data.encode("utf8")
@@ -83,8 +84,10 @@ class ClientThread(threading.Thread):
             time.sleep(3)
             self.close()
 
+    # Method to handle the keep alive request
     def __handle_keep_alive(self):
         
+        # If the player is still connected, we reset the timer
         if self.game.player_left == False and self.game.end == False:      
             self.timer = time.time()
             self.send("keep_alive")
@@ -113,6 +116,7 @@ class ClientThread(threading.Thread):
             elif self.game.active_player == 2 and self.game.end == False:
                 self.game.active_player = 1
 
+    # Close the client thread and the connection
     def close(self):
         self.connection.close()
         self.join()
@@ -120,14 +124,19 @@ class ClientThread(threading.Thread):
     # Run methods of the client thread
     def run(self):
 
-        # infinite loop
+        # Loop to handle the client requests
         while self.connected:
 
             # Check if it receives a data, and try to handle it via the string method, if not it's a dictionnary
             data = self.connection.recv(2048)
             
+            # If the data is not empty, it's a request
             if data != b'':
+
+                # Display the received data for logging purpose
                 print(data)
+
+                # Try to decode the data and load it as a json object
                 try:
                     data = data.decode("utf8")
                     data = json.loads(data)
@@ -139,9 +148,11 @@ class ClientThread(threading.Thread):
                     elif data["message_type"] == "grid":
                         self.__handle_dictionary_format_request(data)
 
+                # If the data is not handled, it's probably because it's truncated or unhandled
                 except:
                     print("error : data not handled or truncated : ", data)                   
                 
+            # Check if the client is still connected with a timer, if not, close the client thread
             current_time = time.time()
             if current_time - self.timer > 20:
                 print("player lost, game ended")

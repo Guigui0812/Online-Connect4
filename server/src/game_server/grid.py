@@ -5,12 +5,15 @@ COLUMN_COUNT = 7
 
 # Represents the grid of the game
 class Grid:
+
+    # Constructor
     def __init__(self):
 
         # Create a 2D list of 0
         self.box_status_matrix = [[0 for j in range(COLUMN_COUNT)] for i in range(ROW_COUNT)]
         self.max_column_stacking = [5, 5, 5, 5, 5, 5, 5]
 
+    # Serialize the grids to send it to the client with JSON
     def get_serialized_matrix(self):
     
         serialized_objects_dict = {
