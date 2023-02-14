@@ -100,9 +100,7 @@ class ClientThread(threading.Thread):
             self.send("keep_alive")
         else:
             self.send("player_lost")
-            print("player lost, game ended")
-            self.connection.close()
-            self.join()
+            print("player lost")
 
     # Manages the "none-string" request (it's just dictionnaries in our case)
     def __handle_dictionary_format_request(self, lastGrid):
@@ -162,7 +160,7 @@ class ClientThread(threading.Thread):
                 
             # Check if the client is still connected with a timer, if not, close the client thread
             current_time = time.time()
-            if current_time - self.timer > 20:
+            if current_time - self.timer > 10:
                 print("player lost, game ended")
                 self.connected = False
                 self.game.player_left = True

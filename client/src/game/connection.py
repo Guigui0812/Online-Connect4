@@ -52,14 +52,6 @@ class Connection:
             
             if response == "player_lost": 
 
-                # send a game_end message to the server as a json
-
-                data_to_send =  {"message_type": "game_request", "request_type": "game_end"}
-                data_to_send = json.dumps(data_to_send)
-                self.send_string(data_to_send)
-
-                response = self.receive_string()
-
                 self.server_alive = False
                 self.keep_alive_thread_running = False
          
