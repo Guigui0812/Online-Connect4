@@ -35,14 +35,13 @@ class Game:
 
         self._screen.blit(self.layers[0], (0, 0))
         self._screen.blit(self.layers[1], (0, 0))
-        self.__display_player()
 
     # Abstract methods that must be implemented in the child classes
     def _event_loop(self):
         pass
 
     # Display the player who is playing
-    def __display_player(self):
+    def _display_player(self):
         
         if self._active_player == 1:
             color = (254, 91, 47)

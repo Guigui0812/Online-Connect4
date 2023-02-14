@@ -12,7 +12,13 @@ class SoloGame(game.Game):
         if self._grid.check_win(self._active_player) == True:
             self._end = True
             self.game_song.stop()
-            end_screen = game.EndScreen(self._screen, self.width, self.height, self._active_player)
+
+            if self._active_player == 1:
+                end_screen = game.EndScreen(self._screen, self.width, self.height, self._active_player, "Joueur 1")
+                end_screen.display()
+            else:
+                end_screen = game.EndScreen(self._screen, self.width, self.height, self._active_player, "Joueur 2")
+
             end_screen.display()
 
     # Change the player
@@ -55,6 +61,7 @@ class SoloGame(game.Game):
             # Update the _screen
             self._draw(mouse_x)
             self._render()
+            self._display_player()
             pygame.display.update()
 
             # Event handler
