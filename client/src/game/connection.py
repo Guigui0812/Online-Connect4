@@ -31,6 +31,9 @@ class Connection:
 
     # Check if the server is still alive
     def check_alive(self):
+
+        print(self.server_alive)
+
         if self.server_alive == True:    
             return True
         else:

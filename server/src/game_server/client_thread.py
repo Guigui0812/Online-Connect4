@@ -87,8 +87,10 @@ class ClientThread(threading.Thread):
         
         # Instruction to handle the end of the game and finish it
         elif data == "game_end":
+
             self.send("game_closed")
             time.sleep(3)
+            self.player_left = True
             self.connected = False
 
     # Method to handle the keep alive request
@@ -160,7 +162,7 @@ class ClientThread(threading.Thread):
                 
             # Check if the client is still connected with a timer, if not, close the client thread
             current_time = time.time()
-            if current_time - self.timer > 10:
+            if current_time - self.timer > 15:
                 print("player lost, game ended")
                 self.connected = False
                 self.game.player_left = True
