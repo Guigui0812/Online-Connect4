@@ -90,7 +90,7 @@ class ClientThread(threading.Thread):
 
             self.send("game_closed")
             time.sleep(3)
-            self.player_left = True
+            self.game.player_left = True
             self.connected = False
 
     # Method to handle the keep alive request
