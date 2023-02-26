@@ -68,3 +68,14 @@ The game is won when 4 pieces of the same color are aligned\. A victory screen i
 By pressing space, you can return to the main menu and start another game\.
 
 <h2> The game server </h2>
+
+The server is multi-client and allows you to conduct multiple game sessions at the same time\. It uses threads and sockets for this\. The port 12345 must be available\.
+
+The server is dockerized and very easy to set up\.
+
+**In the ./server directory, run the following command :**
+```
+docker-compose up -d
+```
+
+The server is running and ready to host games.
