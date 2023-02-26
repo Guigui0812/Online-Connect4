@@ -34,3 +34,13 @@ py.exe .\run_game.py
 From this basic menu, you can play a local multiplayer game or an online multiplayer game\.
 
 ![main_menu](https://user-images.githubusercontent.com/63466144/221406479-068fd2fe-c98b-4df1-a32f-550fd13915b2.PNG)
+
+Choosing the local game mode will take you directly to the game interface, while for the online game you will have to configure your network settings\.
+
+<h3> Online settings menu </h3>
+
+This menu allows you to configure the address, port and nickname that will be used to play online\. 
+
+![settings_menu](https://user-images.githubusercontent.com/63466144/221406824-ce7c1b1f-49e6-4ac2-b6ba-9f53c9d80da2.PNG)
+
+This menu includes a configuration file that saves your information locally so you don't have to repeat the configuration each time\. When you are finished, press play to start the online mode\.
