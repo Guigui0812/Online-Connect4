@@ -1,6 +1,6 @@
 <h1> Python Connect 4 game </h1>
 
-A Connect 4 project in progress with local and online multiplayer. Made with python and the pygame library.
+A Connect 4 project in progress with local and online multiplayer. Made with python and the pygame library. The project is functional, the client can connect to the server, several games can be played at the same time. 
 
 **Requirements** : 
 - python3 or higher
