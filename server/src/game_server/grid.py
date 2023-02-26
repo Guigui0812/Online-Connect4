@@ -50,7 +50,7 @@ class Grid:
                 ):
                     return True
 
-        # Check positively sloped diaganols
+        # Check win in positively diaganols
         for c in range(COLUMN_COUNT - 3):
             for r in range(ROW_COUNT - 3):
                 if (
@@ -61,7 +61,7 @@ class Grid:
                 ):
                     return True
 
-        # Check negatively sloped diaganols
+        # Check win in negatively diaganols
         for c in range(COLUMN_COUNT - 3):
             for r in range(3, ROW_COUNT):
                 if (
