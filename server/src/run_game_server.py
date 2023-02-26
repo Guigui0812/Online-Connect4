@@ -15,6 +15,7 @@ import signal
 
 host, port = '0.0.0.0', 12345
 player_number = 1
+running = True
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((host, port))
@@ -22,6 +23,8 @@ print("server is listening on port", port)
 
 # Gracefully close the server
 def handle_signal(signum, frame):
+
+    running = False
 
     print("Closing all client...")
 
@@ -43,10 +46,11 @@ signal.signal(signal.SIGINT, handle_signal)
 signal.signal(signal.SIGTERM, handle_signal)
 
 # Main loop
-while True:
+while running:
 
     server_socket.listen() # the server listen for connections
 
+    # accept the connection
     connection, address = server_socket.accept()
 
     # if there is a new connection, we create a new thread for it

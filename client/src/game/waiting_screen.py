@@ -3,12 +3,10 @@ import threading
 import pygame.gfxdraw
 import math
 
-# Improvmement: 
-# - Use a thread to handle the waiting screen
-# - Every 2 seconds, change the color of the text
-
+# Represents the waiting screen when the player is waiting for an opponent
 class WaitingScreen(threading.Thread):
 
+    # constructor
     def __init__(self, screen, width, height):
         threading.Thread.__init__(self)
         self._screen = screen
@@ -20,6 +18,7 @@ class WaitingScreen(threading.Thread):
         self.clock = pygame.time.Clock()
         self.waiting_song = pygame.mixer.Sound('../assets/sounds/waiting_song.wav')
 
+    # Method to run the waiting screen
     def run(self):
 
         radius = 10
@@ -38,23 +37,26 @@ class WaitingScreen(threading.Thread):
             text_rect = text.get_rect(center=(self.width/2, self.height/2))
             self._screen.blit(text, text_rect)   
             
+            # Draw an animated circle to the screen
             angle = 360 * counter / num_frames
     
             # Calculate the new position of the circle based on the angle
             x = int(300 + radius * math.cos(math.radians(angle)))
             y = int(350 + radius * math.sin(math.radians(angle)))
             
-            # Draw the circle to the screen with anti-aliasing and fill
+            # Draw the circle
             pygame.gfxdraw.filled_circle(self._screen, x, y, radius, color)
-                   
+            
             pygame.display.update()
             counter += 1
             
             if counter == num_frames:
                 counter = 0
 
+            # Clock to refresh the screen at 60 fps
             self.clock.tick(60)
 
+    # Method to stop the waiting screen
     def stop(self):
         self._running = False
         self.waiting_song.stop()

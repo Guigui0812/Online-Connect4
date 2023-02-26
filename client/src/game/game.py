@@ -4,6 +4,7 @@ import pygame
 # Class that represents the motherclass "Game"
 class Game:
     
+    # Constructor
     def __init__(self, screen, width, height):
         self._end = False
         self._screen = screen
@@ -54,8 +55,10 @@ class Game:
         text_rect = text.get_rect(center=(self.width/2, 40))
         self._screen.blit(text, text_rect)  
 
+    # Method to display the end screen
     def _end_game(self):
         
+        # Set the text to display depending on the winner
         if self._active_player == 1:
             color = (254, 91, 47)
             title = "Le joueur 1 a gagné !"
@@ -63,6 +66,7 @@ class Game:
             color = (61, 120, 255)
             title = "Le joueur 2 a gagné !"
 
+        # Text to display
         text = self.font.render(title, True, color)
         text_rect = text.get_rect(center=(self.width/2, self.height/2))
         self._screen.blit(text, text_rect)

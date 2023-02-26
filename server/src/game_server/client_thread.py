@@ -4,6 +4,7 @@ import re
 import time
 import sys 
 
+# Class to manage the client connection (one thread per client)
 class ClientThread(threading.Thread):
 
     # Number of client currently connected to the server
@@ -32,9 +33,10 @@ class ClientThread(threading.Thread):
         data = data.encode("utf8")
         self.connection.sendall(data)
 
-    # Management of the strings request type
-    def __handle_string_format_request(self, data):
+    # Management of the game_request type
+    def __handle_game_request(self, data):
 
+        # get the request type
         message = data 
         data = data["request_type"]
         print(data)
@@ -87,7 +89,6 @@ class ClientThread(threading.Thread):
         
         # Instruction to handle the end of the game and finish it
         elif data == "game_end":
-
             self.send("game_closed")
             time.sleep(3)
             self.game.player_left = True
@@ -105,12 +106,13 @@ class ClientThread(threading.Thread):
             print("player lost")
 
     # Manages the "none-string" request (it's just dictionnaries in our case)
-    def __handle_dictionary_format_request(self, lastGrid):
+    def __handle_grid_request(self, lastGrid):
 
         # When we receive a dictionnary, it's the updated grid of the client --> Deserialization
         self.send("grid_updated")
         self.game.number_of_turns = self.game.number_of_turns+1
 
+        # Update the grid
         self.game.grid.box_status_matrix = lastGrid["box_status_matrix"]
         self.game.grid.max_column_stacking = lastGrid["max_column_stacking"]
 
@@ -149,12 +151,13 @@ class ClientThread(threading.Thread):
                     data = data.decode("utf8")
                     data = json.loads(data)
                     
+                    # Treat the different types of requests
                     if data["message_type"] == "game_request":
-                        self.__handle_string_format_request(data)
+                        self.__handle_game_request(data)
                     elif data["message_type"] == "keep_alive":
                         self.__handle_keep_alive()
                     elif data["message_type"] == "grid":
-                        self.__handle_dictionary_format_request(data)
+                        self.__handle_grid_request(data)
 
                 # If the data is not handled, it's probably because it's truncated or unhandled
                 except:
