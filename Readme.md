@@ -22,12 +22,15 @@ pip install pygame --pre
 
 <h2> Client </h2>
 
-The client contains classes and menus to play Power 4 locally or connect to the server to play online\. For the moment, there is no executable because the final release has not been done\. 
+The client contains classes and menus to play Power 4 locally or connect to the server to play online\. For the moment, there is no executable because the final release has not been done but it will be added soon\. 
 
 **Launch the client with the command in ./client/src :**
 ```
 py.exe .\run_game.py
 ```
 
-An executable will be added soon\.
+<h3> Main menu </h3>
 
+From this basic menu, you can play a local multiplayer game or an online multiplayer game\.
+
+![main_menu](https://user-images.githubusercontent.com/63466144/221406479-068fd2fe-c98b-4df1-a32f-550fd13915b2.PNG)
