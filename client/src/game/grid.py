@@ -25,9 +25,11 @@ class Grid:
     # Draw the grid in the given screen
     def draw(self, layer):
 
+        # Draw the background of the grid
         rect = pygame.rect.Rect((45, 110), (510, 440))
         pygame.draw.rect(layer[1], "#798192", rect, 0, 30)
 
+        # Draw the boxes in the grid for all boxes depending on their status (0, 1 or 2) (empty, red or blue)
         for i in range(ROW_COUNT):
             for j in range(COLUMN_COUNT):
                 if self.box_status_matrix[i][j] == 0:
@@ -38,19 +40,23 @@ class Grid:
                     self.visual_matrix[i][j].animate()
                 elif self.box_status_matrix[i][j] == 2:
                     self.visual_matrix[i][j].draw_empty(layer[1])
-                    self.visual_matrix[i][j].draw_yellow(layer[0])
+                    self.visual_matrix[i][j].draw_blue(layer[0])
                     self.visual_matrix[i][j].animate()
 
     # Set a box in the grid if it's empty (!= 0)
     def set_box(self, x, player, screen, layer):
 
+        # Loop through all the boxes
         for j in range(COLUMN_COUNT):
+
+            # Check if it's the right box
             if (
                 self.visual_matrix[self.max_column_stacking[j]][j].rect.x
                 < x
                 < self.visual_matrix[self.max_column_stacking[j]][j].rect.x
                 + self.visual_matrix[self.max_column_stacking[j]][j].rect.width
             ):
+                # if the box is empty, set it to the player number
                 if self.box_status_matrix[self.max_column_stacking[j]][j] == 0:
                     self.box_status_matrix[self.max_column_stacking[j]][j] = player
                     self.max_column_stacking[j] -= 1
@@ -58,14 +64,17 @@ class Grid:
 
         return False
 
+    # Get the serialized matrix of the grid (for the server)
     def get_serialized_matrix(self):
     
+        # Create a dictionary of the objects to serialize : the box status matrix and the max column stacking
         serialized_objects_dict = {
             "message_type": "grid",
             "box_status_matrix": self.box_status_matrix,
             "max_column_stacking": self.max_column_stacking
         }
         
+        # Serialize the dictionary
         json_serialized_objects_dict = json.dumps(serialized_objects_dict)
        
         return json_serialized_objects_dict
@@ -95,7 +104,7 @@ class Grid:
                 ):
                     return True
 
-        # Check positively sloped diaganols
+        # Check diagonally locations for win
         for c in range(COLUMN_COUNT - 3):
             for r in range(ROW_COUNT - 3):
                 if (
@@ -106,7 +115,7 @@ class Grid:
                 ):
                     return True
 
-        # Check negatively sloped diaganols
+        # Check diagonally locations for win
         for c in range(COLUMN_COUNT - 3):
             for r in range(3, ROW_COUNT):
                 if (
@@ -120,8 +129,10 @@ class Grid:
     # Draw a triangle on the top of the column that the mouse is over
     def draw_triangle(self, screen, x):
 
+        # Loop through all the boxes
         for j in range(COLUMN_COUNT):
 
+            # Check if it's the right box
             if (
                 self.visual_matrix[self.max_column_stacking[j]][j].rect.x
                 < x
@@ -129,12 +140,12 @@ class Grid:
                 + self.visual_matrix[self.max_column_stacking[j]][j].rect.width
             ):
 
-                # fmt: off
+                # Draw the triangle on the top of the column that the mouse is over
                 triangle_points = [(self.visual_matrix[self.max_column_stacking[j]][j].rect.x 
                     + (self.visual_matrix[self.max_column_stacking[j]][j].rect.width / 2), 100), 
                     (self.visual_matrix[self.max_column_stacking[j]][j].rect.x + 20, 80,),
                     ((self.visual_matrix[self.max_column_stacking[j]][j].rect.x
                     + self.visual_matrix[self.max_column_stacking[j]][j].rect.width) - 20,80)]
-                # fmt: on
-
+                
+                # Draw the triangle
                 pygame.draw.polygon(screen, "#FFDC18", triangle_points)

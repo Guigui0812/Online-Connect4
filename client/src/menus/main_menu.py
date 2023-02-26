@@ -40,18 +40,22 @@ class MainMenu:
 
         for event in pygame.event.get():
 
+            # Close event
             if event.type == pygame.QUIT:
                 self.running = False
 
+            # Mouse click event
             if(event.type == pygame.MOUSEBUTTONDOWN):
+
+                # If the user clicks on the solo game button, start a solo game
                 if(self.buttons[0].rect.collidepoint(mouse_position)):
                     self.menu_song.stop()
                     new_game = game.SoloGame(self.screen, self.width, self.height)
                     new_game.start_game()
 
+                # If the user clicks on the online game button, go to the online settings menu
                 if(self.buttons[1].rect.collidepoint(mouse_position)):
-                    self.menu_song.stop()
-                    new_game = menus.OnlineSettings(self.screen, self.width, self.height)
+                    new_game = menus.OnlineSettings(self.screen, self.width, self.height, self.menu_song)
                     new_game.run_online_settings()
 
     # Run the menu

@@ -3,6 +3,7 @@ import threading
 import time
 import json
 
+# Represents a connection to the server
 class Connection:
 
     # Initialize the connection class
@@ -46,13 +47,13 @@ class Connection:
         while self.keep_alive_thread_running == True:       
 
             # send a keep alive message to the server as a json
-
             data_to_send =  {"message_type": "keep_alive"}
             data_to_send = json.dumps(data_to_send)
             self.send_string(data_to_send)
 
             response = self.receive_string()
-            
+
+            # if the server is not alive or if the other player left, we stop the thread
             if response == "player_lost": 
 
                 self.server_alive = False

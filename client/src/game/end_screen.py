@@ -1,7 +1,9 @@
 import pygame
 
+# Class to display the end screen when the game is over
 class EndScreen():
 
+    # Constructor
     def __init__(self, screen, width, height, player_color, pseudo):
         self._screen = screen
         self._running = True
@@ -13,6 +15,7 @@ class EndScreen():
         self.title_color = 0
         self.end_song = pygame.mixer.Sound('../assets/sounds/end_game_song.wav')
 
+        # Set the text to display depending on the winner
         if player_color == 1:
             self.title_color = (223, 59, 15)
             self._text = pseudo + " est le vainqueur !"
@@ -20,6 +23,7 @@ class EndScreen():
             self.title_color = (61, 120, 255)
             self._text = pseudo + " est le vainqueur !"
 
+    # Method to display the end screen
     def display(self):
 
         self.end_song.play(-1)
@@ -31,8 +35,7 @@ class EndScreen():
 
             # Text to display
             text = self.font.render(self._text, True, self.title_color)
-            text_rect = text.get_rect(center=(self.width/2, self.height/2))
-            
+            text_rect = text.get_rect(center=(self.width/2, self.height/2))       
             info_text = self.font_light.render("Appuyez sur espace pour revenir au menu", True, "#8E8E8E")
             info_rect = info_text.get_rect(center=(self.width/2, self.height - 50))
 
@@ -41,9 +44,12 @@ class EndScreen():
             self._screen.blit(info_text, info_rect)    
             pygame.display.update()
             
+            # Event loop
             for event in pygame.event.get():
+
                 # if the window is closed, quit the game
                 if event.type == pygame.QUIT:
+                    self.end_song.stop()
                     self._running = False
                     pygame.quit()
 
