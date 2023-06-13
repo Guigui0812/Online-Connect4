@@ -164,3 +164,10 @@ cython_debug/
 
 # Ignore all the files in the .data folder, that is in ./server/.data
 /server/data/
+
+# Ignore files .vscode folder
+.vscode
+.vscode/*
+
+# Ignore files that contains env 
+env/
